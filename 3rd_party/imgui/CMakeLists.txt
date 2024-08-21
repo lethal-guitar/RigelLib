@@ -9,8 +9,8 @@ add_library(dear_imgui STATIC
 )
 target_include_directories(dear_imgui
     PUBLIC
-    ${CMAKE_SOURCE_DIR}/3rd_party/imgui/
-    ${CMAKE_SOURCE_DIR}/3rd_party/imgui/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui
 )
 target_link_libraries(dear_imgui
     PRIVATE

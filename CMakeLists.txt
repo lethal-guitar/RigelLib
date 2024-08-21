@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
+if (DEFINED PROJECT_NAME)
+    set(RIGEL_IS_BUNDLED ON)
+else()
+    set(RIGEL_IS_BUNDLED OFF)
+endif()
+
 project(RigelLib VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -11,34 +17,37 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Project settings
 ###############################################################################
 
-if (NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
-  message(STATUS "No build type was specified, will default to ${CMAKE_BUILD_TYPE}")
-endif()
-
 option(RIGEL_USE_GL_ES "Use OpenGL ES instead of regular OpenGL" OFF)
 option(RIGEL_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 option(RIGEL_BUILD_TESTS "Build tests" OFF)
 
-message(STATUS "********************************************************************************")
-message(STATUS "${PROJECT_NAME}, build type: ${CMAKE_BUILD_TYPE}, version: ${PROJECT_VERSION}")
-message(STATUS "********************************************************************************")
+if (NOT RIGEL_IS_BUNDLED)
+    if (NOT CMAKE_BUILD_TYPE)
+      set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+      message(STATUS "No build type was specified, will default to ${CMAKE_BUILD_TYPE}")
+    endif()
 
-include("${CMAKE_SOURCE_DIR}/cmake/rigel_sanitizers.cmake")
+    message(STATUS "********************************************************************************")
+    message(STATUS "${PROJECT_NAME}, build type: ${CMAKE_BUILD_TYPE}, version: ${PROJECT_VERSION}")
+    message(STATUS "********************************************************************************")
+else()
+    set(RIGEL_BUILD_TESTS OFF)
+endif()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/rigel_sanitizers.cmake")
+
 
 # Dependencies
 ###############################################################################
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-include("${CMAKE_SOURCE_DIR}/cmake/rigel.cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/rigel.cmake")
 
 # This catches the most common case, where none of the submodules have been
 # initialized. It's still possible to get in a state where imgui is present
 # but other submodules are not, but that's unlikely to happen to someone who
 # has just cloned the repo and wants to build for the first time.
-if(NOT EXISTS "${CMAKE_SOURCE_DIR}/3rd_party/imgui/imgui/imgui.h")
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/3rd_party/imgui/imgui/imgui.h")
     message(FATAL_ERROR
         "It seems git submodules were not initialized. You need to run git submodule update --init --recursive, and then re-run CMake.")
 endif()
@@ -81,3 +90,6 @@ if(RIGEL_BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
 endif()
+
+
+add_library(RigelLib::RigelLib ALIAS RigelLib)
