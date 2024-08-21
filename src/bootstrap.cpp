@@ -156,7 +156,7 @@ void runAppUnguarded(
   LOG_F(INFO, "Loading OpenGL function pointers");
   opengl::loadGlFunctions();
 
-  SDL_GL_SetSwapInterval(1);
+  SDL_GL_SetSwapInterval(config.enableVsync ? 1 : 0);
   SDL_GL_SwapWindow(pWindow.get());
 
   LOG_F(INFO, "Initializing Dear ImGui");

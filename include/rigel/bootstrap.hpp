@@ -32,10 +32,21 @@ struct WindowConfig
   int windowWidth = 1920;
   int windowHeight = 1080;
   bool fullscreen = true;
+  bool enableVsync = true;
   std::optional<uint8_t> depthBufferBits;
 };
 
 
+/** Init SDL+Gl, create window and run provided function in a loop
+ *
+ * This function initializes SDL, OpenGL, and Dear ImGui, then creates a window
+ * using the specified configuration, and calls the provided function in a loop
+ * until it returns false.
+ *
+ * Exceptions are caught and shown as message box before terminating the loop.
+ *
+ * The return value is the application exit code, to be returned from main().
+ */
 int runApp(
   const WindowConfig& config,
   std::function<bool(SDL_Window*)> runFrameFunc);
