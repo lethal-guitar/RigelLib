@@ -27,11 +27,11 @@ namespace rigel::base
 {
 
 /** Load image from file (png, jpeg, other common formats - uses STB Image) */
-std::optional<data::Image> loadImage(const std::filesystem::path& path);
-std::optional<data::Image> loadImage(base::ArrayView<std::uint8_t> data);
+std::optional<Image> loadImage(const std::filesystem::path& path);
+std::optional<Image> loadImage(base::ArrayView<std::uint8_t> data);
 
-data::Image loadImageOrThrow(const std::filesystem::path& path);
+Image loadImageOrThrow(const std::filesystem::path& path);
 
-bool savePng(const std::filesystem::path& path, const data::Image& image);
+bool savePng(const std::filesystem::path& path, const Image& image);
 
 } // namespace rigel::base

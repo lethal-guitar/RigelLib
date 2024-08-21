@@ -19,11 +19,8 @@
 #include <stdexcept>
 
 
-namespace rigel::data
+namespace rigel::base
 {
-
-using namespace std;
-
 
 Image::Image(
   const PixelBuffer& pixels,
@@ -48,7 +45,7 @@ Image::Image(
 
 
 Image::Image(const std::size_t width, const std::size_t height)
-  : Image(vector<Pixel>(width * height, Pixel{}), width, height)
+  : Image(PixelBuffer(width * height, Pixel{}), width, height)
 {
 }
 
@@ -102,7 +99,7 @@ void Image::insertImage(
   const auto inferredHeight = pixels.size() / sourceWidth;
   if (x + sourceWidth > mWidth || y + inferredHeight > mHeight)
   {
-    throw invalid_argument("Source image doesn't fit");
+    throw std::invalid_argument("Source image doesn't fit");
   }
 
   auto sourceIter = pixels.begin();
@@ -125,7 +122,7 @@ Image Image::extractSubImage(
 {
   if (x + width > mWidth || y + height > mHeight)
   {
-    throw invalid_argument("Area out of bounds");
+    throw std::invalid_argument("Area out of bounds");
   }
 
   PixelBuffer data;
@@ -142,4 +139,4 @@ Image Image::extractSubImage(
   return Image{std::move(data), width, height};
 }
 
-} // namespace rigel::data
+} // namespace rigel::base

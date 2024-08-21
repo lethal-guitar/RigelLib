@@ -34,7 +34,7 @@ namespace rigel::base
 namespace
 {
 
-std::optional<data::Image>
+std::optional<Image>
   convertToImage(unsigned char* pImageData, const int width, const int height)
 {
   if (!pImageData)
@@ -42,10 +42,10 @@ std::optional<data::Image>
     return {};
   }
 
-  const auto pPixels = reinterpret_cast<const data::Pixel*>(pImageData);
+  const auto pPixels = reinterpret_cast<const Pixel*>(pImageData);
   const auto numPixels = static_cast<size_t>(width * height);
-  data::PixelBuffer buffer{pPixels, pPixels + numPixels};
-  return data::Image{
+  PixelBuffer buffer{pPixels, pPixels + numPixels};
+  return Image{
     std::move(buffer), static_cast<size_t>(width), static_cast<size_t>(height)};
 }
 
@@ -59,7 +59,7 @@ void writeToFile(void* pContext, void* pData, int size)
 } // namespace
 
 
-std::optional<data::Image> loadImage(const std::filesystem::path& path)
+std::optional<Image> loadImage(const std::filesystem::path& path)
 {
   if (const auto data = base::tryLoadFile(path))
   {
@@ -70,7 +70,7 @@ std::optional<data::Image> loadImage(const std::filesystem::path& path)
 }
 
 
-std::optional<data::Image> loadImage(base::ArrayView<std::uint8_t> data)
+std::optional<Image> loadImage(base::ArrayView<std::uint8_t> data)
 {
   int width = 0;
   int height = 0;
@@ -86,7 +86,7 @@ std::optional<data::Image> loadImage(base::ArrayView<std::uint8_t> data)
 }
 
 
-data::Image loadImageOrThrow(const std::filesystem::path& path)
+Image loadImageOrThrow(const std::filesystem::path& path)
 {
   if (auto image = loadImage(path))
   {
@@ -97,7 +97,7 @@ data::Image loadImageOrThrow(const std::filesystem::path& path)
 }
 
 
-bool savePng(const std::filesystem::path& path, const data::Image& image)
+bool savePng(const std::filesystem::path& path, const Image& image)
 {
   std::ofstream file(path, std::ios::binary);
   if (!file.is_open())

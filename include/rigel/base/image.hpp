@@ -22,17 +22,14 @@
 #include <vector>
 
 
-namespace rigel::data
+namespace rigel::base
 {
 
 using Pixel = rigel::base::Color;
 using PixelBuffer = std::vector<Pixel>;
 
 
-/** Simple technology-agnostic image data holder.
- *
- * Always RGBA, 8-bit to keep things simple.
- */
+/** 2D image (bitmap), RGBA */
 class Image
 {
 public:
@@ -46,16 +43,25 @@ public:
 
   std::size_t height() const { return mHeight; }
 
+  /** Returns a vertically flipped copy of the image */
   Image flipped() const;
+
+  /** Returns a copy of the image, converted to premultiplied alpha */
   Image withPremultipliedAlpha() const;
 
+  /** Copy given image's pixels into this image
+   *
+   * The source image must fit into the target image.
+   */
   void insertImage(std::size_t x, std::size_t y, const Image& image);
+
   void insertImage(
     std::size_t x,
     std::size_t y,
     const PixelBuffer& pixels,
     std::size_t sourceWidth);
 
+  /** Create Image containing only the pixels in the specified region */
   Image extractSubImage(
     std::size_t x,
     std::size_t y,
@@ -69,4 +75,4 @@ private:
 };
 
 
-} // namespace rigel::data
+} // namespace rigel::base
