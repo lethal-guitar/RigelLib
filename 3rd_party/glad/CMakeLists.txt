@@ -1,4 +1,4 @@
-if (USE_GL_ES)
+if (RIGEL_USE_GL_ES)
     set(gl_variant "es2.0")
 else()
     set(gl_variant "3.0")

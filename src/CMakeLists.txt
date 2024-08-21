@@ -63,7 +63,7 @@ endif()
 
 rigel_enable_warnings(RigelLib)
 
-if(USE_GL_ES)
+if(RIGEL_USE_GL_ES)
     target_compile_definitions(RigelLib PUBLIC
         RIGEL_USE_GL_ES=1
     )

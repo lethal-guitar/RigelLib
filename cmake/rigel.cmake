@@ -8,7 +8,7 @@ function(rigel_enable_warnings target)
         )
         add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
 
-        if (WARNINGS_AS_ERRORS)
+        if (RIGEL_WARNINGS_AS_ERRORS)
             target_compile_options(${target} PRIVATE /WX)
         endif()
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -40,7 +40,7 @@ function(rigel_enable_warnings target)
             -Wno-extra-semi-stmt
         )
 
-        if (WARNINGS_AS_ERRORS)
+        if (RIGEL_WARNINGS_AS_ERRORS)
             target_compile_options(${target} PRIVATE -Werror)
         endif()
     elseif(CMAKE_COMPILER_IS_GNUCXX)
@@ -53,7 +53,7 @@ function(rigel_enable_warnings target)
             -Wno-psabi
         )
 
-        if (WARNINGS_AS_ERRORS)
+        if (RIGEL_WARNINGS_AS_ERRORS)
             target_compile_options(${target} PRIVATE -Werror)
         endif()
     else()

@@ -34,7 +34,7 @@ target_compile_definitions(dear_imgui
     "-DIMGUI_STB_RECT_PACK_FILENAME=<stb_rect_pack.h>"
 )
 
-if (USE_GL_ES)
+if (RIGEL_USE_GL_ES)
     target_compile_definitions(dear_imgui
         PRIVATE
         -DIMGUI_IMPL_OPENGL_ES2
