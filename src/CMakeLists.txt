@@ -21,6 +21,7 @@ set(sources
     ../include/rigel/sdl_utils/ptr.hpp
     ../include/rigel/ui/fps_display.hpp
     ../include/rigel/ui/imgui_integration.hpp
+    ../include/rigel/bootstrap.hpp
 
     base/array_view.cpp
     base/byte_buffer.cpp
@@ -33,6 +34,7 @@ set(sources
     sdl_utils/platform.cpp
     ui/fps_display.cpp
     ui/imgui_integration.cpp
+    bootstrap.cpp
 )
 
 
