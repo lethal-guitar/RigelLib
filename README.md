@@ -1,6 +1,6 @@
 # RigelLib
 
-This is a collection of reusable code and utilities for C++ applications based on SDL and OpenGL, packaged as a library. Most of this was originally written for [RigelEngine](https://github.com/lethal-guitar/RigelEngine).
+This library offers a collection of reusable code and utilities for C++ applications based on SDL and OpenGL. Most of this was originally written for [RigelEngine](https://github.com/lethal-guitar/RigelEngine).
 
 # How to use this
 
@@ -10,4 +10,12 @@ More detailed instructions coming soon.
 
 # What's in here?
 
-TBD
+The library is organized into a few different modules.
+
+## `base`
+
+## `sdl_utils`
+
+## `ui`
+
+
