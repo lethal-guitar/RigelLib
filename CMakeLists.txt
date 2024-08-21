@@ -93,3 +93,4 @@ endif()
 
 
 add_library(RigelLib::RigelLib ALIAS RigelLib)
+add_library(RigelLib::lyra ALIAS lyra)
