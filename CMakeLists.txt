@@ -62,26 +62,12 @@ if (TARGET Boost::boost)
 endif()
 
 
-# Compiler settings
-###############################################################################
-
-if(MSVC)
-    add_compile_options(
-        /Zc:__cplusplus
-        /permissive-
-        /MP
-        /EHsc
-        /utf-8
-    )
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    add_compile_options(
-        -fcolor-diagnostics
-    )
-endif()
-
 
 # Build targets
 ###############################################################################
+
+rigel_set_global_compiler_flags()
+
 
 add_subdirectory(3rd_party)
 add_subdirectory(src)

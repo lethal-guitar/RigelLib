@@ -83,3 +83,20 @@ function(rigel_determine_git_commit_hash output_var)
         endif()
     endif()
 endfunction()
+
+
+function(rigel_set_global_compiler_flags)
+    if(MSVC)
+        add_compile_options(
+            /Zc:__cplusplus
+            /permissive-
+            /MP
+            /EHsc
+            /utf-8
+        )
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        add_compile_options(
+            -fcolor-diagnostics
+        )
+    endif()
+endfunction()
