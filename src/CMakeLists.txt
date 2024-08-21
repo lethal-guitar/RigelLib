@@ -1,10 +1,10 @@
 set(sources
     ../include/rigel/base/array_view.hpp
+    ../include/rigel/base/binary_io.hpp
     ../include/rigel/base/byte_buffer.hpp
     ../include/rigel/base/clock.hpp
     ../include/rigel/base/container_utils.hpp
     ../include/rigel/base/defer.hpp
-    ../include/rigel/base/file_utils.hpp
     ../include/rigel/base/grid.hpp
     ../include/rigel/base/image.hpp
     ../include/rigel/base/image_loading.hpp
@@ -23,7 +23,7 @@ set(sources
     ../include/rigel/ui/imgui_integration.hpp
 
     base/array_view.cpp
-    base/file_utils.cpp
+    base/byte_buffer.cpp
     base/image.cpp
     base/image_loading.cpp
     base/string_utils.cpp

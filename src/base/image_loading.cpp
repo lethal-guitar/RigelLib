@@ -16,7 +16,7 @@
 
 #include "base/image_loading.hpp"
 
-#include "base/file_utils.hpp"
+#include "base/byte_buffer.hpp"
 #include "base/warnings.hpp"
 
 RIGEL_DISABLE_WARNINGS

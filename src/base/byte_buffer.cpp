@@ -14,7 +14,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "base/file_utils.hpp"
+#include "base/byte_buffer.hpp"
 
 #include <cassert>
 #include <fstream>

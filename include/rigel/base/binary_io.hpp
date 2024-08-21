@@ -16,84 +16,13 @@
 
 #pragma once
 
-#include <rigel/base/byte_buffer.hpp>
-
 #include <cstdint>
-#include <filesystem>
 #include <istream>
-#include <optional>
 #include <ostream>
-#include <string>
 #include <type_traits>
-#include <vector>
 
 
 namespace rigel::base
-{
-
-std::optional<ByteBuffer> tryLoadFile(const std::filesystem::path& path);
-
-ByteBuffer loadFileOrThrow(const std::filesystem::path& path);
-
-void saveToFile(
-  const base::ByteBuffer& buffer,
-  const std::filesystem::path& filePath);
-
-std::string asText(const ByteBuffer& buffer);
-
-
-/** Offers checked reading of little-endian data from a byte buffer
- *
- * All readX() methods will throw if there is not enough data left.
- */
-class LeStreamReader
-{
-public:
-  explicit LeStreamReader(const ByteBuffer& data);
-  LeStreamReader(ByteBufferCIter begin, ByteBufferCIter end);
-
-  std::uint8_t readU8();
-  std::uint16_t readU16();
-  /** Read 32bit little-endian word encoded as 3 bytes */
-  std::uint32_t readU24();
-  std::uint32_t readU32();
-
-  std::int8_t readS8();
-  std::int16_t readS16();
-  /** Read 32bit little-endian word encoded as 3 bytes */
-  std::int32_t readS24();
-  std::int32_t readS32();
-
-  std::uint8_t peekU8();
-  std::uint16_t peekU16();
-  std::uint32_t peekU24();
-  std::uint32_t peekU32();
-
-  std::int8_t peekS8();
-  std::int16_t peekS16();
-  std::int32_t peekS24();
-  std::int32_t peekS32();
-
-  void skipBytes(std::size_t count);
-  bool hasData() const;
-  size_t numBytesLeft() const;
-  ByteBufferCIter currentIter() const;
-
-private:
-  template <typename Callable>
-  auto withPreservingCurrentIter(Callable func);
-
-  ByteBufferCIter mCurrentByteIter;
-  const ByteBufferCIter mDataEnd;
-};
-
-
-std::string readFixedSizeString(LeStreamReader& reader, std::size_t len);
-
-} // namespace rigel::base
-
-
-namespace rigel
 {
 
 namespace detail
