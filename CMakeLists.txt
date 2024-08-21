@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
-project(RigelLib VERSION 0.1.0)
+project(RigelLib VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -75,3 +75,9 @@ endif()
 ###############################################################################
 
 add_subdirectory(3rd_party)
+add_subdirectory(src)
+
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif()
