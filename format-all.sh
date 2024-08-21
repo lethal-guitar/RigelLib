@@ -16,4 +16,4 @@ if ! $CLANG_FORMAT --version | grep "11\.\([0-9]\+\)\.\([0-9]\+\)" > /dev/null 2
     exit 1
 fi
 
-find "$(pwd)/src" "$(pwd)/test" -iname *.\[chi\]pp -exec $CLANG_FORMAT -i {} +
+find "$(pwd)/src" "$(pwd)/examples" "$(pwd)/test" -iname *.\[chi\]pp -exec $CLANG_FORMAT -i {} +

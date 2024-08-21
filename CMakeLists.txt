@@ -20,6 +20,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(RIGEL_USE_GL_ES "Use OpenGL ES instead of regular OpenGL" OFF)
 option(RIGEL_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 option(RIGEL_BUILD_TESTS "Build tests" OFF)
+option(RIGEL_BUILD_EXAMPLES "Build examples" OFF)
 
 if (NOT RIGEL_IS_BUNDLED)
     if (NOT CMAKE_BUILD_TYPE)
@@ -32,9 +33,12 @@ if (NOT RIGEL_IS_BUNDLED)
     message(STATUS "********************************************************************************")
 else()
     set(RIGEL_BUILD_TESTS OFF)
+    set(RIGEL_BUILD_EXAMPLES OFF)
 endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/rigel_sanitizers.cmake")
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 
 # Dependencies
@@ -75,6 +79,10 @@ add_subdirectory(src)
 if(RIGEL_BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
+endif()
+
+if(RIGEL_BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()
 
 
