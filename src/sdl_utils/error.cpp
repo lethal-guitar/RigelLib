@@ -14,7 +14,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "error.hpp"
+#include "sdl_utils/error.hpp"
 
 #include "base/warnings.hpp"
 

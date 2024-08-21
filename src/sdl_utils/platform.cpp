@@ -14,7 +14,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "platform.hpp"
+#include "sdl_utils/platform.hpp"
 
 #include <SDL_video.h>
 

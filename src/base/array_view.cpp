@@ -14,7 +14,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "array_view.hpp"
+#include "base/array_view.hpp"
 
 #include <stdexcept>
 #include <string>

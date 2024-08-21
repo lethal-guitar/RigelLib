@@ -16,27 +16,22 @@
 
 #pragma once
 
-#include "base/warnings.hpp"
-
-RIGEL_DISABLE_WARNINGS
-#include <SDL.h>
-RIGEL_RESTORE_WARNINGS
+#include <rigel/base/array_view.hpp>
+#include <rigel/base/image.hpp>
 
 #include <filesystem>
 #include <optional>
+#include <string>
 
-
-namespace rigel::ui::imgui_integration
+namespace rigel::base
 {
 
-void init(
-  SDL_Window* pWindow,
-  void* pGlContext,
-  const std::optional<std::filesystem::path>& preferencesPath);
-void shutdown();
+/** Load image from file (png, jpeg, other common formats - uses STB Image) */
+std::optional<data::Image> loadImage(const std::filesystem::path& path);
+std::optional<data::Image> loadImage(base::ArrayView<std::uint8_t> data);
 
-bool handleEvent(const SDL_Event& event);
-void beginFrame(SDL_Window* pWindow);
-void endFrame();
+data::Image loadImageOrThrow(const std::filesystem::path& path);
 
-} // namespace rigel::ui::imgui_integration
+bool savePng(const std::filesystem::path& path, const data::Image& image);
+
+} // namespace rigel::base

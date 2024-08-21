@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "base/byte_buffer.hpp"
+#include <rigel/base/byte_buffer.hpp>
 
 #include <cstdint>
 #include <filesystem>

@@ -14,7 +14,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "fps_display.hpp"
+#include "ui/fps_display.hpp"
 
 #include "base/math_utils.hpp"
 

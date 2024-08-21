@@ -14,7 +14,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "image_loading.hpp"
+#include "base/image_loading.hpp"
 
 #include "base/file_utils.hpp"
 #include "base/warnings.hpp"

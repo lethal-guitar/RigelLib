@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "base/color.hpp"
+#include <rigel/base/color.hpp>
 
 #include <cstdint>
 #include <vector>

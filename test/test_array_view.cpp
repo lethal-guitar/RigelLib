@@ -14,8 +14,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <base/array_view.hpp>
-#include <base/warnings.hpp>
+#include <rigel/base/array_view.hpp>
+#include <rigel/base/warnings.hpp>
 
 RIGEL_DISABLE_WARNINGS
 #include <catch2/catch_test_macros.hpp>

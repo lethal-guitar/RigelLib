@@ -16,44 +16,46 @@
 
 #pragma once
 
-#include "base/warnings.hpp"
+#include <rigel/base/warnings.hpp>
 
 RIGEL_DISABLE_WARNINGS
-#include <SDL_keycode.h>
+#include <SDL.h>
+#include <SDL_mixer.h>
+//#include <SDL_ttf.h>
 RIGEL_RESTORE_WARNINGS
+
+#include <memory>
 
 
 namespace rigel::sdl_utils
 {
 
-/** Normalize keys with left/right variant to always use the left one
- *
- * For keys that usually exist on both sides of the keyboard, like Shift, Alt
- * etc., SDL provides separate key codes for the left and right variant.
- * In order to treat both versions of those keys as the same, this function
- * always returns the left variant for any of these keys. Other key codes
- * are returned unchanged.
- */
-inline SDL_Keycode normalizeLeftRightVariants(const SDL_Keycode keyCode)
+namespace detail
 {
-  if (keyCode == SDLK_RCTRL)
-  {
-    return SDLK_LCTRL;
-  }
-  else if (keyCode == SDLK_RALT)
-  {
-    return SDLK_LALT;
-  }
-  else if (keyCode == SDLK_RSHIFT)
-  {
-    return SDLK_LSHIFT;
-  }
-  else if (keyCode == SDLK_RGUI)
-  {
-    return SDLK_LGUI;
-  }
 
-  return keyCode;
+struct Deleter
+{
+  void operator()(SDL_Window* ptr) { SDL_DestroyWindow(ptr); }
+  void operator()(SDL_GameController* ptr) { SDL_GameControllerClose(ptr); }
+  void operator()(SDL_Surface* ptr) { SDL_FreeSurface(ptr); }
+
+  void operator()(Mix_Chunk* ptr) { Mix_FreeChunk(ptr); }
+  void operator()(Mix_Music* ptr) { Mix_FreeMusic(ptr); }
+
+  // void operator()(TTF_Font* ptr) { TTF_CloseFont(ptr); }
+};
+
+} // namespace detail
+
+
+template <typename SDLType>
+using Ptr = std::unique_ptr<SDLType, detail::Deleter>;
+
+
+template <typename SDLType>
+[[nodiscard]] auto wrap(SDLType* ptr)
+{
+  return Ptr<SDLType>{ptr};
 }
 
 } // namespace rigel::sdl_utils

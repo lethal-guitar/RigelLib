@@ -14,7 +14,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "imgui_integration.hpp"
+#include "ui/imgui_integration.hpp"
 
 RIGEL_DISABLE_WARNINGS
 #include <imgui.h>

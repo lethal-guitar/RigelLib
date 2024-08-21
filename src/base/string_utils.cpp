@@ -14,7 +14,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "string_utils.hpp"
+#include "base/string_utils.hpp"
 
 #include <algorithm>
 #include <cassert>

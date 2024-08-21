@@ -14,8 +14,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <base/string_utils.hpp>
-#include <base/warnings.hpp>
+#include <rigel/base/string_utils.hpp>
+#include <rigel/base/warnings.hpp>
 
 RIGEL_DISABLE_WARNINGS
 #include <catch2/catch_test_macros.hpp>

@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "base/math_utils.hpp"
+#include <rigel/base/math_utils.hpp>
 
 #include <cstdint>
 #include <tuple>

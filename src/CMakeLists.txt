@@ -1,33 +1,34 @@
 set(sources
+    ../include/rigel/base/array_view.hpp
+    ../include/rigel/base/byte_buffer.hpp
+    ../include/rigel/base/clock.hpp
+    ../include/rigel/base/container_utils.hpp
+    ../include/rigel/base/defer.hpp
+    ../include/rigel/base/file_utils.hpp
+    ../include/rigel/base/grid.hpp
+    ../include/rigel/base/image.hpp
+    ../include/rigel/base/image_loading.hpp
+    ../include/rigel/base/math_utils.hpp
+    ../include/rigel/base/spatial_types.hpp
+    ../include/rigel/base/static_vector.hpp
+    ../include/rigel/base/string_utils.hpp
+    ../include/rigel/base/warnings.hpp
+    ../include/rigel/sdl_utils/error.hpp
+    ../include/rigel/sdl_utils/key_code.hpp
+    ../include/rigel/sdl_utils/platform.hpp
+    ../include/rigel/sdl_utils/ptr.hpp
+    ../include/rigel/ui/fps_display.hpp
+    ../include/rigel/ui/imgui_integration.hpp
+
     base/array_view.cpp
-    base/array_view.hpp
-    base/byte_buffer.hpp
-    base/clock.hpp
-    base/container_utils.hpp
-    base/defer.hpp
     base/file_utils.cpp
-    base/file_utils.hpp
-    base/grid.hpp
     base/image.cpp
-    base/image.hpp
     base/image_loading.cpp
-    base/image_loading.hpp
-    base/math_utils.hpp
-    base/spatial_types.hpp
-    base/static_vector.hpp
     base/string_utils.cpp
-    base/string_utils.hpp
-    base/warnings.hpp
     sdl_utils/error.cpp
-    sdl_utils/error.hpp
-    sdl_utils/key_code.hpp
     sdl_utils/platform.cpp
-    sdl_utils/platform.hpp
-    sdl_utils/ptr.hpp
     ui/fps_display.cpp
-    ui/fps_display.hpp
     ui/imgui_integration.cpp
-    ui/imgui_integration.hpp
 )
 
 
@@ -35,7 +36,10 @@ add_library(RigelLib STATIC ${sources})
 
 target_include_directories(RigelLib
     PUBLIC
-    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../include"
+
+    PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/../include/rigel"
 )
 target_link_libraries(RigelLib
     PUBLIC

@@ -14,8 +14,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <base/spatial_types.hpp>
-#include <base/warnings.hpp>
+#include <rigel/base/spatial_types.hpp>
+#include <rigel/base/warnings.hpp>
 
 RIGEL_DISABLE_WARNINGS
 #include <catch2/catch_test_macros.hpp>
