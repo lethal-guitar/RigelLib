@@ -18,7 +18,7 @@
 
 #include "base/defer.hpp"
 #include "base/warnings.hpp"
-#include "render/opengl.hpp"
+#include "opengl/opengl.hpp"
 #include "sdl_utils/error.hpp"
 #include "sdl_utils/ptr.hpp"
 #include "ui/imgui_integration.hpp"
@@ -154,7 +154,7 @@ void runAppUnguarded(
   auto glGuard = defer([pGlContext]() { SDL_GL_DeleteContext(pGlContext); });
 
   LOG_F(INFO, "Loading OpenGL function pointers");
-  render::loadGlFunctions();
+  opengl::loadGlFunctions();
 
   SDL_GL_SetSwapInterval(1);
   SDL_GL_SwapWindow(pWindow.get());

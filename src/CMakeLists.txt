@@ -13,8 +13,8 @@ set(sources
     ../include/rigel/base/static_vector.hpp
     ../include/rigel/base/string_utils.hpp
     ../include/rigel/base/warnings.hpp
-    ../include/rigel/render/opengl.hpp
-    ../include/rigel/render/shader.hpp
+    ../include/rigel/opengl/opengl.hpp
+    ../include/rigel/opengl/shader.hpp
     ../include/rigel/sdl_utils/error.hpp
     ../include/rigel/sdl_utils/key_code.hpp
     ../include/rigel/sdl_utils/platform.hpp
@@ -28,8 +28,8 @@ set(sources
     base/image.cpp
     base/image_loading.cpp
     base/string_utils.cpp
-    render/opengl.cpp
-    render/shader.cpp
+    opengl/opengl.cpp
+    opengl/shader.cpp
     sdl_utils/error.cpp
     sdl_utils/platform.cpp
     ui/fps_display.cpp

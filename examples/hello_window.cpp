@@ -16,7 +16,7 @@
 
 #include <rigel/base/defer.hpp>
 #include <rigel/bootstrap.hpp>
-#include <rigel/render/opengl.hpp>
+#include <rigel/opengl/opengl.hpp>
 #include <rigel/ui/imgui_integration.hpp>
 
 #include <SDL_main.h>

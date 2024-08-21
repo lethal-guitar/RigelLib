@@ -20,7 +20,7 @@
 #include <rigel/base/defer.hpp>
 #include <rigel/base/spatial_types.hpp>
 #include <rigel/base/warnings.hpp>
-#include <rigel/render/opengl.hpp>
+#include <rigel/opengl/opengl.hpp>
 
 RIGEL_DISABLE_WARNINGS
 #include <glm/gtc/type_ptr.hpp>
@@ -33,7 +33,7 @@ RIGEL_RESTORE_WARNINGS
 #include <unordered_map>
 
 
-namespace rigel::render
+namespace rigel::opengl
 {
 
 class GlHandleWrapper
@@ -196,4 +196,4 @@ private:
 
 base::ScopeGuard useTemporarily(const Shader& shader);
 
-} // namespace rigel::render
+} // namespace rigel::opengl

@@ -14,7 +14,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "render/opengl.hpp"
+#include "opengl/opengl.hpp"
 
 #include "sdl_utils/error.hpp"
 
@@ -25,7 +25,7 @@ RIGEL_RESTORE_WARNINGS
 #include <stdexcept>
 
 
-void rigel::render::loadGlFunctions()
+void rigel::opengl::loadGlFunctions()
 {
   int result = 0;
 

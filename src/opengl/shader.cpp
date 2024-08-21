@@ -14,14 +14,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "render/shader.hpp"
+#include "opengl/shader.hpp"
 
 #include <memory>
 #include <stdexcept>
 #include <string>
 
 
-namespace rigel::render
+namespace rigel::opengl
 {
 
 namespace
@@ -233,4 +233,4 @@ base::ScopeGuard useTemporarily(const Shader& shader)
   return useTemporarily(shader.handle());
 }
 
-} // namespace rigel::render
+} // namespace rigel::opengl
