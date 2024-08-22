@@ -1,6 +1,6 @@
 # RigelLib
 
-This library offers a collection of reusable code and utilities for C++ applications based on SDL and OpenGL. Most of this was originally written for [RigelEngine](https://github.com/lethal-guitar/RigelEngine).
+This library offers a collection of reusable code and utilities for C++ applications based on SDL and OpenGL. Most of this is based on code originally written for [RigelEngine](https://github.com/lethal-guitar/RigelEngine).
 
 
 # How to use this
@@ -12,6 +12,10 @@ Also see the [examples](/examples).
 # What's in here?
 
 The library is organized into a few different modules:
+
+### `bootstrap.hpp` (top-level)
+
+Mini-framework for setting up an SDL+OpenGL application. Provides a helper function which initializes SDL and OpenGL and creates an application window, then repeatedly calls a user-provided "new frame" function. It handles some intricacies like enabling high DPI support on Windows and also optionally offers command line options parsing.
 
 ### `base`
 
