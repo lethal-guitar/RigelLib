@@ -1,10 +1,10 @@
-add_executable(HelloWindow WIN32)
+add_executable(Bootstrap WIN32)
 
-target_sources(HelloWindow PRIVATE
-    hello_window.cpp
+target_sources(Bootstrap PRIVATE
+    bootstrap.cpp
 )
-target_link_libraries(HelloWindow PRIVATE
+target_link_libraries(Bootstrap PRIVATE
     RigelLib::RigelLib
 )
 
-rigel_enable_warnings(HelloWindow)
+rigel_enable_warnings(Bootstrap)
