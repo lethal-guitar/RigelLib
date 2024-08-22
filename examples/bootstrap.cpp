@@ -34,66 +34,74 @@ struct CommandLineOptions
 };
 
 
-bool runOneFrame(SDL_Window* pWindow, const CommandLineOptions& opts)
+class App
 {
-  // Handle events
-  SDL_Event event;
-  while (SDL_PollEvent(&event))
+public:
+  explicit App(const CommandLineOptions& opts)
+    : mShowImGuiWindow(opts.showImGuiWindow)
   {
-    rigel::ui::imgui_integration::handleEvent(event);
-
-    switch (event.type)
-    {
-      case SDL_QUIT:
-        return false;
-    }
   }
 
-
+  bool runOneFrame(SDL_Window* pWindow)
   {
-    // Dear ImGui integration
-    rigel::ui::imgui_integration::beginFrame(pWindow);
-    auto imGuiFrameGuard =
-      rigel::base::defer([]() { rigel::ui::imgui_integration::endFrame(); });
-
-
-    // OpenGL rendering, game/app logic etc. goes here
-    glClearColor(0.6f, 0.85f, 0.9f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    if (opts.showImGuiWindow)
+    // Handle events
+    SDL_Event event;
+    while (SDL_PollEvent(&event))
     {
-      ImGui::Button("ImGui Test");
+      rigel::ui::imgui_integration::handleEvent(event);
+
+      switch (event.type)
+      {
+        case SDL_QUIT:
+          return false;
+      }
     }
+
+
+    {
+      // Dear ImGui integration
+      rigel::ui::imgui_integration::beginFrame(pWindow);
+      auto imGuiFrameGuard =
+        rigel::base::defer([]() { rigel::ui::imgui_integration::endFrame(); });
+
+
+      // OpenGL rendering, game/app logic etc. goes here
+      glClearColor(0.6f, 0.85f, 0.9f, 1.0f);
+      glClear(GL_COLOR_BUFFER_BIT);
+
+      if (mShowImGuiWindow)
+      {
+        ImGui::Button("ImGui Test");
+      }
+    }
+
+
+    // Present frame
+    SDL_GL_SwapWindow(pWindow);
+
+    // Keep running
+    return true;
   }
 
-
-  // Present frame
-  SDL_GL_SwapWindow(pWindow);
-
-  // Keep running
-  return true;
-}
+private:
+  bool mShowImGuiWindow;
+};
 
 } // namespace
 
 
 int main(int argc, char** argv)
 {
-  rigel::WindowConfig windowConfig;
-  windowConfig.windowTitle = "Hello";
-  windowConfig.fullscreen = false;
-
   CommandLineOptions opts;
 
-
-  rigel::runApp(
+  const auto maybeErrorCode = rigel::parseArgs(
     argc,
     argv,
     [&opts](lyra::cli& argsParser) {
       // Configure Lyra CLI argument parser with command line arguments.
-      // Writes the result into `opts`.
+      // See Lyra library documenation for more details.
 
+      // Here we write the result into `opts`.
       argsParser |= lyra::opt(opts.fullscreen)["-f"]["--fullscreen"].help(
         "Run in fullscreen mode");
       argsParser |= lyra::opt([&](const bool hide) {
@@ -104,17 +112,31 @@ int main(int argc, char** argv)
       })["--hide-imgui"];
     },
     [&]() {
-      // This allows doing additional verification and post-processing on the
-      // parsed command line args
-
-      windowConfig.fullscreen = opts.fullscreen;
-
+      // This allows doing additional verification of the parsed command line
+      // args. Return false to indicate an error
       return true;
-    },
+    });
 
+  if (maybeErrorCode)
+  {
+    return *maybeErrorCode;
+  }
+
+  rigel::WindowConfig windowConfig;
+  windowConfig.windowTitle = "Hello";
+  windowConfig.fullscreen = opts.fullscreen;
+
+  std::unique_ptr<App> pApp;
+
+  rigel::runApp(
     windowConfig,
-    [&opts](SDL_Window* pWindow) {
+    [&pApp, &opts](SDL_Window*) {
+      // Put initialization code here that should run right before the main
+      // loop
+      pApp = std::make_unique<App>(opts);
+    },
+    [&pApp](SDL_Window* pWindow) {
       // This is invoked continuously until it returns false
-      return runOneFrame(pWindow, opts);
+      return pApp->runOneFrame(pWindow);
     });
 }

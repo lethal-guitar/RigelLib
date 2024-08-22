@@ -180,47 +180,9 @@ void showErrorBox(const char* message)
 }
 
 
-std::optional<int> parseArgs(
-  int argc,
-  char** argv,
-  std::function<void(lyra::cli&)> setupCliOptionsFunc,
-  std::function<bool()> validateCliOptionsParseResultFunc)
-{
-  auto showHelp = false;
-
-  auto optionsParser = lyra::cli() | lyra::help(showHelp);
-
-  // Add user-supplied options
-  setupCliOptionsFunc(optionsParser);
-
-  const auto parseResult = optionsParser.parse({argc, argv});
-
-  if (showHelp)
-  {
-    std::cout << optionsParser << '\n';
-    return 0;
-  }
-
-  if (!parseResult)
-  {
-    std::cerr << "ERROR: " << parseResult.message() << "\n\n";
-    std::cerr << optionsParser << '\n';
-    return -1;
-  }
-
-  // Run user-supplied post-parsing validation function
-  if (!validateCliOptionsParseResultFunc())
-  {
-    return -1;
-  }
-
-  // All good, we can continue
-  return std::nullopt;
-}
-
-
 void runAppUnguarded(
   const WindowConfig& config,
+  std::function<void(SDL_Window*)> initFunc,
   std::function<bool(SDL_Window*)> runFrameFunc)
 {
   using base::defer;
@@ -252,6 +214,8 @@ void runAppUnguarded(
   ui::imgui_integration::init(pWindow.get(), pGlContext, {});
   auto imGuiGuard = defer([]() { ui::imgui_integration::shutdown(); });
 
+  initFunc(pWindow.get());
+
   while (runFrameFunc(pWindow.get()))
   {
     //
@@ -267,9 +231,18 @@ int runApp(
   const WindowConfig& config,
   std::function<bool(SDL_Window*)> runFrameFunc)
 {
+  return runApp(config, [](SDL_Window*) {}, std::move(runFrameFunc));
+}
+
+
+int runApp(
+  const WindowConfig& config,
+  std::function<void(SDL_Window*)> initFunc,
+  std::function<bool(SDL_Window*)> runFrameFunc)
+{
   try
   {
-    runAppUnguarded(config, std::move(runFrameFunc));
+    runAppUnguarded(config, std::move(initFunc), std::move(runFrameFunc));
     return 0;
   }
   catch (const std::exception& ex)
@@ -287,13 +260,11 @@ int runApp(
 }
 
 
-int runApp(
+std::optional<int> parseArgs(
   int argc,
   char** argv,
   std::function<void(lyra::cli&)> setupCliOptionsFunc,
-  std::function<bool()> validateCliOptionsParseResultFunc,
-  const WindowConfig& config,
-  std::function<bool(SDL_Window*)> runFrameFunc)
+  std::function<bool()> validateCliOptionsParseResultFunc)
 {
   // On Windows, our executable is a GUI application (subsystem win32), which
   // means that it can't be used as a command-line application - stdout and
@@ -310,22 +281,38 @@ int runApp(
   // can output some text to the terminal and then detach again.
   auto win32IoGuard = win32ReenableStdIo();
 
-  const auto maybeExitCode = parseArgs(
-    argc,
-    argv,
-    std::move(setupCliOptionsFunc),
-    std::move(validateCliOptionsParseResultFunc));
+  auto showHelp = false;
 
-  if (maybeExitCode)
+  auto optionsParser = lyra::cli() | lyra::help(showHelp);
+
+  // Add user-supplied options
+  setupCliOptionsFunc(optionsParser);
+
+  const auto parseResult = optionsParser.parse({argc, argv});
+
+  if (showHelp)
   {
-    // Error during command line parsing, exit out
-    return *maybeExitCode;
+    std::cout << optionsParser << '\n';
+    return 0;
   }
 
-  // Once we're ready to run, detach from the console. See comment above
+  if (!parseResult)
+  {
+    std::cerr << "ERROR: " << parseResult.message() << "\n\n";
+    std::cerr << optionsParser << '\n';
+    return -1;
+  }
+
+  // Run user-supplied post-parsing validation function
+  if (!validateCliOptionsParseResultFunc())
+  {
+    return -1;
+  }
+
+  // Once we're done, detach from the console. See comment above
   win32IoGuard.reset();
 
-  return runApp(config, std::move(runFrameFunc));
+  return std::nullopt;
 }
 
 } // namespace rigel

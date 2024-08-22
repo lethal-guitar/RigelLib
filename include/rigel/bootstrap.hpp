@@ -56,12 +56,15 @@ int runApp(
   const WindowConfig& config,
   std::function<bool(SDL_Window*)> runFrameFunc);
 
-/** Like runApp, but also provides command line options parsing */
+/** Same as runApp(), but with an additional init step */
 int runApp(
+  const WindowConfig& config,
+  std::function<void(SDL_Window*)> initFunc,
+  std::function<bool(SDL_Window*)> runFrameFunc);
+
+std::optional<int> parseArgs(
   int argc, char** argv,
   std::function<void(lyra::cli&)> setupCliOptionsFunc,
-  std::function<bool()> validateCliOptionsParseResultFunc,
-  const WindowConfig& config,
-  std::function<bool(SDL_Window*)> runFrameFunc);
+  std::function<bool()> validateCliOptionsParseResultFunc);
 
 }
