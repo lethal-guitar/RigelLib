@@ -21,6 +21,7 @@
 
 #include <SDL_main.h>
 #include <imgui/imgui.h>
+#include <lyra/lyra.hpp>
 
 
 int main(int argc, char** argv)
@@ -29,40 +30,68 @@ int main(int argc, char** argv)
   windowConfig.windowTitle = "Hello";
   windowConfig.fullscreen = false;
 
-  rigel::runApp(windowConfig, [](SDL_Window* pWindow) {
-    // Handle events
-    SDL_Event event;
-    while (SDL_PollEvent(&event))
-    {
-      rigel::ui::imgui_integration::handleEvent(event);
+  bool showImGuiWindow = true;
 
-      switch (event.type)
+  rigel::runApp(
+    argc,
+    argv,
+    [&](lyra::cli& argsParser) {
+      // Configure Lyra CLI argument parser with command line arguments.
+
+      argsParser |=
+        lyra::opt(windowConfig.fullscreen)["-f"]["--fullscreen"].help(
+          "Run in fullscreen mode");
+      argsParser |= lyra::opt([&](const bool hide) {
+        if (hide)
+        {
+          showImGuiWindow = false;
+        }
+      })["--hide-imgui"];
+    },
+    []() {
+      // This allows doing additional verification and post-processing on the
+      // parsed command line args
+      return true;
+    },
+
+    windowConfig,
+    [&](SDL_Window* pWindow) {
+      // Handle events
+      SDL_Event event;
+      while (SDL_PollEvent(&event))
       {
-        case SDL_QUIT:
-          return false;
+        rigel::ui::imgui_integration::handleEvent(event);
+
+        switch (event.type)
+        {
+          case SDL_QUIT:
+            return false;
+        }
       }
-    }
 
 
-    {
-      // Dear ImGui integration
-      rigel::ui::imgui_integration::beginFrame(pWindow);
-      auto imGuiFrameGuard =
-        rigel::base::defer([]() { rigel::ui::imgui_integration::endFrame(); });
+      {
+        // Dear ImGui integration
+        rigel::ui::imgui_integration::beginFrame(pWindow);
+        auto imGuiFrameGuard = rigel::base::defer(
+          []() { rigel::ui::imgui_integration::endFrame(); });
 
 
-      // OpenGL rendering, game/app logic etc. goes here
-      glClearColor(0.6f, 0.85f, 0.9f, 1.0f);
-      glClear(GL_COLOR_BUFFER_BIT);
+        // OpenGL rendering, game/app logic etc. goes here
+        glClearColor(0.6f, 0.85f, 0.9f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-      ImGui::Button("ImGui Test");
-    }
+        if (showImGuiWindow)
+        {
+          ImGui::Button("ImGui Test");
+        }
+      }
 
 
-    // Present frame
-    SDL_GL_SwapWindow(pWindow);
+      // Present frame
+      SDL_GL_SwapWindow(pWindow);
 
-    // Keep running
-    return true;
-  });
+      // Keep running
+      return true;
+    });
 }

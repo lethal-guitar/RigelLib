@@ -49,18 +49,19 @@ target_include_directories(RigelLib
 )
 target_link_libraries(RigelLib
     PUBLIC
-    dear_imgui
     SDL2::Core
+    dear_imgui
     glad
     glm
     loguru
+    lyra
     nlohmann-json
     static_vector
     std::filesystem
 
     PRIVATE
-    stb
     speex_resampler
+    stb
 )
 
 if (TARGET Boost::boost)

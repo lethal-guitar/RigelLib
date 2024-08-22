@@ -16,7 +16,12 @@
 
 #pragma once
 
+#include <rigel/base/warnings.hpp>
+
+RIGEL_DISABLE_WARNINGS
 #include <SDL.h>
+#include <lyra/cli.hpp>
+RIGEL_RESTORE_WARNINGS
 
 #include <functional>
 #include <optional>
@@ -48,6 +53,14 @@ struct WindowConfig
  * The return value is the application exit code, to be returned from main().
  */
 int runApp(
+  const WindowConfig& config,
+  std::function<bool(SDL_Window*)> runFrameFunc);
+
+/** Like runApp, but also provides command line options parsing */
+int runApp(
+  int argc, char** argv,
+  std::function<void(lyra::cli&)> setupCliOptionsFunc,
+  std::function<bool()> validateCliOptionsParseResultFunc,
   const WindowConfig& config,
   std::function<bool(SDL_Window*)> runFrameFunc);
 

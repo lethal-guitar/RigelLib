@@ -17,6 +17,7 @@
 #include "bootstrap.hpp"
 
 #include "base/defer.hpp"
+#include "base/match.hpp"
 #include "base/warnings.hpp"
 #include "opengl/opengl.hpp"
 #include "sdl_utils/error.hpp"
@@ -25,12 +26,55 @@
 
 RIGEL_DISABLE_WARNINGS
 #include <loguru.hpp>
+#include <lyra/help.hpp>
 RIGEL_RESTORE_WARNINGS
 
 
 #ifdef _WIN32
 
+  #include <stdio.h>
   #include <win32_SetProcessDpiAware.h>
+  #include <windows.h>
+
+
+static std::optional<rigel::base::ScopeGuard> win32ReenableStdIo()
+{
+  if (AttachConsole(ATTACH_PARENT_PROCESS))
+  {
+    std::cin.clear();
+    std::cout.flush();
+    std::cerr.flush();
+
+    FILE* fp = nullptr;
+    freopen_s(&fp, "CONIN$", "r", stdin);
+    freopen_s(&fp, "CONOUT$", "w", stdout);
+    freopen_s(&fp, "CONOUT$", "w", stderr);
+
+    std::cout << std::endl;
+
+    return rigel::base::defer([]() {
+      std::cout.flush();
+      std::cerr.flush();
+
+      // This is a hack to make the console output behave like it does when
+      // running a genuine console app (i.e. subsystem set to console).
+      // The thing is that even though we attach to the console that has
+      // launched us, the console itself is not actually waiting for our
+      // process to terminate, since it treats us as a GUI application.
+      // This means that we can write our stdout/stderr to the console, but
+      // the console won't show a new prompt after our process has terminated
+      // like it would do with a console application. This makes command line
+      // usage awkward because users need to press enter once after each
+      // invocation of RigelEngine in order to get a new prompt.
+      // By sending a enter key press message to the parent console, we do this
+      // automatically.
+      SendMessageA(GetConsoleWindow(), WM_CHAR, VK_RETURN, 0);
+      FreeConsole();
+    });
+  }
+
+  return std::nullopt;
+}
 
 static void enableDpiAwareness()
 {
@@ -38,6 +82,12 @@ static void enableDpiAwareness()
 }
 
 #else
+
+static std::optional<rigel::base::ScopeGuard> win32ReenableStdIo()
+{
+  return std::nullopt;
+}
+
 
 static void enableDpiAwareness() { }
 
@@ -130,6 +180,45 @@ void showErrorBox(const char* message)
 }
 
 
+std::optional<int> parseArgs(
+  int argc,
+  char** argv,
+  std::function<void(lyra::cli&)> setupCliOptionsFunc,
+  std::function<bool()> validateCliOptionsParseResultFunc)
+{
+  auto showHelp = false;
+
+  auto optionsParser = lyra::cli() | lyra::help(showHelp);
+
+  // Add user-supplied options
+  setupCliOptionsFunc(optionsParser);
+
+  const auto parseResult = optionsParser.parse({argc, argv});
+
+  if (showHelp)
+  {
+    std::cout << optionsParser << '\n';
+    return 0;
+  }
+
+  if (!parseResult)
+  {
+    std::cerr << "ERROR: " << parseResult.message() << "\n\n";
+    std::cerr << optionsParser << '\n';
+    return -1;
+  }
+
+  // Run user-supplied post-parsing validation function
+  if (!validateCliOptionsParseResultFunc())
+  {
+    return -1;
+  }
+
+  // All good, we can continue
+  return std::nullopt;
+}
+
+
 void runAppUnguarded(
   const WindowConfig& config,
   std::function<bool(SDL_Window*)> runFrameFunc)
@@ -195,6 +284,48 @@ int runApp(
     showErrorBox("Unknown error");
     return -3;
   }
+}
+
+
+int runApp(
+  int argc,
+  char** argv,
+  std::function<void(lyra::cli&)> setupCliOptionsFunc,
+  std::function<bool()> validateCliOptionsParseResultFunc,
+  const WindowConfig& config,
+  std::function<bool(SDL_Window*)> runFrameFunc)
+{
+  // On Windows, our executable is a GUI application (subsystem win32), which
+  // means that it can't be used as a command-line application - stdout and
+  // stdin are not connected to the terminal that launches the executable in
+  // case of a GUI application.
+  // However, it's possible to detect that we've been launched from a terminal,
+  // and then manually attach our stdin/stdout to that terminal. This makes
+  // our command line interface usable on Windows.
+  // It's not perfect, because the terminal itself doesn't actually know
+  // that a process it has launched has now attached to it, so it keeps happily
+  // accepting user input, it doesn't wait for our process to terminate like
+  // it normally does when running a console application. But since we don't
+  // need interactive command line use, it's good enough for our case - we
+  // can output some text to the terminal and then detach again.
+  auto win32IoGuard = win32ReenableStdIo();
+
+  const auto maybeExitCode = parseArgs(
+    argc,
+    argv,
+    std::move(setupCliOptionsFunc),
+    std::move(validateCliOptionsParseResultFunc));
+
+  if (maybeExitCode)
+  {
+    // Error during command line parsing, exit out
+    return *maybeExitCode;
+  }
+
+  // Once we're ready to run, detach from the console. See comment above
+  win32IoGuard.reset();
+
+  return runApp(config, std::move(runFrameFunc));
 }
 
 } // namespace rigel
