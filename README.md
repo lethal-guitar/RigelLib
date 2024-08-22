@@ -5,36 +5,40 @@ This library offers a collection of reusable code and utilities for C++ applicat
 
 # How to use this
 
-The intended way of integrating RigelLib into a project is to add the code as a git submodule (or copy it into your source tree), and then use CMake's `add_subdirectory` function to include it in the build. 
+The easiest way to integrate RigelLib into a project is to add the code as a git submodule, or copy it into your source tree.
 
-E.g., to set up the submodule:
+Set up the submodule:
 
 ```bash
 git submodule add https://github.com/lethal-guitar/RigelLib.git RigelLib
 git submodule update --init --recursive
 ```
 
-The `CMakeLists.txt`:
+Then add a `CMakeLists.txt` like this:
 
 ```
-# 3.13 is the minimum required by RigelLib. You can of course require a higher version here
+# 3.13 is the minimum required by RigelLib. You can of course require a higher
+# version here
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
 project(MyAwesomeGame)
 
-# This will build the library as part of your project and make its CMake targets available
-add_subdirectory(RigelLib)
+# This will build the library as part of your project and make its CMake targets
+# available (including SDL2::Core and SDL2::Main).
+# It also does the necessary find_package() call to locate SDL2.
+include(RigelLib/setup.cmake)
 
 # Now define your own build targets, and depend on RigelLib
 add_executable(MyAwesomeGame
     main.cpp
 )
 target_link_libraries(MyAwesomeGame PRIVATE
+    SDL2::Main
     RigelLib::RigelLib
 )
 ```
 
-And that's it! You now have an application that's ready to use SDL2 and OpenGL. RigelLib will handle the necessary CMake bits to find the SDL2 library, you only need to install it on your system.
+And that's it! You now have the foundation of a SDL2+OpenGL application.
 
 Also see the [examples](/examples).
 

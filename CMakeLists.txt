@@ -44,7 +44,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 # Dependencies
 ###############################################################################
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
+if (NOT RIGEL_IS_BUNDLED)
+    include(deps.cmake)
+endif()
+
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/rigel.cmake")
 
 # This catches the most common case, where none of the submodules have been
@@ -56,10 +59,6 @@ if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/3rd_party/imgui/imgui/imgui.h")
         "It seems git submodules were not initialized. You need to run git submodule update --init --recursive, and then re-run CMake.")
 endif()
 
-find_package(SDL2 REQUIRED)
-find_package(Filesystem REQUIRED COMPONENTS Final)
-find_package(Boost)
-find_package(Git)
 
 if (TARGET Boost::boost)
     add_definitions(-DRIGEL_HAVE_BOOST)
@@ -88,3 +87,4 @@ endif()
 
 add_library(RigelLib::RigelLib ALIAS RigelLib)
 add_library(RigelLib::lyra ALIAS lyra)
+add_library(RigelLib::SDL2 ALIAS SDL2::Core)
