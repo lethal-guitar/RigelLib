@@ -44,7 +44,11 @@ The library is organized into a few different modules:
 
 ### `bootstrap.hpp` (top-level)
 
-Mini-framework for setting up an SDL+OpenGL application. Provides a helper function which initializes SDL and OpenGL and creates an application window, then repeatedly calls a user-provided "new frame" function. It handles some intricacies like enabling high DPI support on Windows and also optionally offers command line options parsing. See the [`bootstrap.cpp` example](/examples/bootstrap.cpp).
+Mini-framework for setting up an SDL+OpenGL application. Provides a helper function which initializes SDL and OpenGL and creates an application window, then repeatedly calls a user-provided "new frame" function.
+There's also command line parsing functionality (based on the [Lyra](https://github.com/bfgroup/Lyra) library).
+The code handles some Windows-specific intricacies like enabling high DPI support and allowing terminal output when running as a GUI application (subsystem "Windows").
+
+See the [`bootstrap.cpp` example](/examples/bootstrap.cpp).
 
 ### `base`
 
