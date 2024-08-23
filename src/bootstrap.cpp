@@ -16,8 +16,6 @@
 
 #include "bootstrap.hpp"
 
-#include "base/defer.hpp"
-#include "base/match.hpp"
 #include "base/warnings.hpp"
 #include "opengl/opengl.hpp"
 #include "sdl_utils/error.hpp"
@@ -210,20 +208,6 @@ void runAppUnguarded(
 {
   using base::defer;
 
-  enableDpiAwareness();
-  loadGameControllerDbForOldSdl();
-
-  LOG_F(INFO, "Initializing SDL");
-  sdl_utils::check(
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER));
-  auto sdlGuard = defer([]() { SDL_Quit(); });
-
-  LOG_F(
-    INFO,
-    "SDL backends: %s, %s",
-    SDL_GetCurrentVideoDriver(),
-    SDL_GetCurrentAudioDriver());
-
   sdl_utils::check(SDL_GL_LoadLibrary(nullptr));
 
   setGLAttributes(config);
@@ -262,6 +246,28 @@ void runAppUnguarded(
 } // namespace
 
 
+[[nodiscard]] base::ScopeGuard initSdl()
+{
+  using base::defer;
+
+  enableDpiAwareness();
+  loadGameControllerDbForOldSdl();
+
+  LOG_F(INFO, "Initializing SDL");
+  sdl_utils::check(
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER));
+  auto sdlGuard = defer([]() { SDL_Quit(); });
+
+  LOG_F(
+    INFO,
+    "SDL backends: %s, %s",
+    SDL_GetCurrentVideoDriver(),
+    SDL_GetCurrentAudioDriver());
+
+  return sdlGuard;
+}
+
+
 int runApp(
   const WindowConfig& config,
   std::function<bool(SDL_Window*)> runFrameFunc)
@@ -277,6 +283,13 @@ int runApp(
 {
   try
   {
+    std::optional<base::ScopeGuard> sdlGuard;
+
+    if (!SDL_WasInit(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER))
+    {
+      sdlGuard.emplace(initSdl());
+    }
+
     runAppUnguarded(config, std::move(initFunc), std::move(runFrameFunc));
     return 0;
   }

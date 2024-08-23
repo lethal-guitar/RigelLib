@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <rigel/base/defer.hpp>
 #include <rigel/base/warnings.hpp>
 
 RIGEL_DISABLE_WARNINGS
@@ -44,11 +45,29 @@ struct WindowConfig
 };
 
 
+/** Initialize SDL (video, audio, and gamecontroller subsystems)
+ *
+ * Use this function if you need to perform work between SDL initialization
+ * and window creation:
+ *
+ *   auto guard = initSdl();
+ *   doSomeWorkThatDependsOnSdlBeingInitialized();
+ *   runApp(...);
+ *
+ * If that's not needed, it's enough to call runApp, it will initialize SDL
+ * by itself.
+ */
+[[nodiscard]] base::ScopeGuard initSdl();
+
+
 /** Init SDL+Gl, create window and run provided function in a loop
  *
  * This function initializes SDL, OpenGL, and Dear ImGui, then creates a window
  * using the specified configuration, and calls the provided function in a loop
  * until it returns false.
+ *
+ * If SDL is already initialized, e.g. by calling initSdl() beforehand, it
+ * won't be initialized again.
  *
  * Exceptions are caught and shown as message box before terminating the loop.
  *
@@ -64,6 +83,7 @@ int runApp(
   std::function<void(SDL_Window*)> initFunc,
   std::function<bool(SDL_Window*)> runFrameFunc);
 
+/** Helper function for argument parsing */
 std::optional<int> parseArgs(
   int argc, char** argv,
   std::function<void(lyra::cli&)> setupCliOptionsFunc,
