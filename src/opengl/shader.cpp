@@ -130,24 +130,6 @@ auto useTemporarily(const GLuint shaderHandle)
 } // namespace
 
 
-glm::mat4 computeTransformationMatrix(
-  const glm::vec2& translation,
-  const glm::vec2& scale,
-  const float rotation,
-  const float framebufferWidth,
-  const float framebufferHeight)
-{
-  const auto projection =
-    glm::ortho(0.0f, framebufferWidth, framebufferHeight, 0.0f);
-  return glm::scale(
-    glm::rotate(
-      glm::translate(projection, glm::vec3(translation, 0.0f)),
-      rotation,
-      glm::vec3{0.0f, 0.0f, 1.0f}),
-    glm::vec3(scale, 1.0f));
-}
-
-
 Shader::Shader(const ShaderSpec& spec)
   : mProgram(glCreateProgram(), glDeleteProgram)
   , mVertexLayout(spec.mVertexLayout)

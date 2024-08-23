@@ -18,7 +18,6 @@
 
 #include <rigel/base/array_view.hpp>
 #include <rigel/base/defer.hpp>
-#include <rigel/base/spatial_types.hpp>
 #include <rigel/base/warnings.hpp>
 #include <rigel/opengl/opengl.hpp>
 
@@ -83,41 +82,6 @@ struct ShaderSpec
   const char* mVertexSource;
   const char* mFragmentSource;
 };
-
-
-glm::mat4 computeTransformationMatrix(
-  const glm::vec2& translation,
-  const glm::vec2& scale,
-  float rotation,
-  float framebufferWidth,
-  float framebufferHeight);
-
-inline glm::mat4 computeTransformationMatrix(
-  const glm::vec2& translation,
-  const glm::vec2& scale,
-  const float rotation,
-  const base::Size& framebufferSize)
-{
-  return computeTransformationMatrix(
-    translation,
-    scale,
-    rotation,
-    float(framebufferSize.width),
-    float(framebufferSize.height));
-}
-
-inline glm::mat4 computeTransformationMatrix(
-  const base::Vec2& translation,
-  const base::Vec2f& scale,
-  const float rotationInDegrees,
-  const base::Size& framebufferSize)
-{
-  return computeTransformationMatrix(
-    glm::vec2{float(translation.x), float(translation.y)},
-    glm::vec2{scale.x, scale.y},
-    glm::radians(rotationInDegrees),
-    framebufferSize);
-}
 
 
 class Shader
