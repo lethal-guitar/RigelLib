@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 
   std::unique_ptr<App> pApp;
 
-  rigel::runApp(
+  return rigel::runApp(
     windowConfig,
     [&pApp, &opts](SDL_Window*) {
       // Put initialization code here that should run right before the main
