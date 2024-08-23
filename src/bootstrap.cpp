@@ -158,8 +158,8 @@ sdl_utils::Ptr<SDL_Window> createWindow(const WindowConfig& config)
     height);
   auto pWindow = sdl_utils::wrap(sdl_utils::check(SDL_CreateWindow(
     config.windowTitle.c_str(),
-    SDL_WINDOWPOS_CENTERED,
-    SDL_WINDOWPOS_CENTERED,
+    config.windowX,
+    config.windowY,
     width,
     height,
     windowFlags)));
@@ -171,6 +171,29 @@ sdl_utils::Ptr<SDL_Window> createWindow(const WindowConfig& config)
   sdl_utils::check(SDL_SetWindowDisplayMode(pWindow.get(), &displayMode));
 
   return pWindow;
+}
+
+
+void loadGameControllerDbForOldSdl()
+{
+  // SDL versions before 2.0.10 didn't check the SDL_GAMECONTROLLERCONFIG_FILE
+  // env var. To make working with game controllers more consistent across
+  // SDL versions, we implement this ourselves in case the SDL version being
+  // used is older.
+  SDL_version version;
+  SDL_GetVersion(&version);
+
+  if (version.major == 2 && version.minor == 0 && version.patch < 10)
+  {
+    LOG_F(
+      INFO,
+      "SDL older than 2.0.10, manually checking "
+      "SDL_GAMECONTROLLERCONFIG_FILE env var");
+    if (const auto pMappingsFile = SDL_getenv("SDL_GAMECONTROLLERCONFIG_FILE"))
+    {
+      SDL_GameControllerAddMappingsFromFile(pMappingsFile);
+    }
+  }
 }
 
 
@@ -188,11 +211,18 @@ void runAppUnguarded(
   using base::defer;
 
   enableDpiAwareness();
+  loadGameControllerDbForOldSdl();
 
   LOG_F(INFO, "Initializing SDL");
   sdl_utils::check(
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER));
   auto sdlGuard = defer([]() { SDL_Quit(); });
+
+  LOG_F(
+    INFO,
+    "SDL backends: %s, %s",
+    SDL_GetCurrentVideoDriver(),
+    SDL_GetCurrentAudioDriver());
 
   sdl_utils::check(SDL_GL_LoadLibrary(nullptr));
 
@@ -207,8 +237,13 @@ void runAppUnguarded(
   LOG_F(INFO, "Loading OpenGL function pointers");
   opengl::loadGlFunctions();
 
+  // On some platforms, an initial swap is necessary in order for the next
+  // frame to show up on screen.
   SDL_GL_SetSwapInterval(config.enableVsync ? 1 : 0);
   SDL_GL_SwapWindow(pWindow.get());
+
+  SDL_DisableScreenSaver();
+  SDL_ShowCursor(SDL_DISABLE);
 
   LOG_F(INFO, "Initializing Dear ImGui");
   ui::imgui_integration::init(pWindow.get(), pGlContext, {});

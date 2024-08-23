@@ -36,6 +36,8 @@ struct WindowConfig
   std::string windowTitle = "Rigel SDL Window";
   int windowWidth = 1920;
   int windowHeight = 1080;
+  int windowX = SDL_WINDOWPOS_CENTERED;
+  int windowY = SDL_WINDOWPOS_CENTERED;
   bool fullscreen = true;
   bool enableVsync = true;
   std::optional<uint8_t> depthBufferBits;
