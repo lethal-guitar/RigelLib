@@ -100,3 +100,23 @@ function(rigel_set_global_compiler_flags)
         )
     endif()
 endfunction()
+
+
+macro(rigel_standard_project_setup)
+    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
+    if (NOT CMAKE_BUILD_TYPE)
+      set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+      message(STATUS "No build type was specified, will default to ${CMAKE_BUILD_TYPE}")
+    endif()
+
+    message(STATUS "********************************************************************************")
+    message(STATUS "${PROJECT_NAME}, build type: ${CMAKE_BUILD_TYPE}, version: ${PROJECT_VERSION}")
+    message(STATUS "********************************************************************************")
+
+    rigel_set_global_compiler_flags()
+endmacro()
