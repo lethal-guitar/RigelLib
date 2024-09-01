@@ -19,7 +19,7 @@
 RIGEL_DISABLE_WARNINGS
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
-#include <imgui_impl_sdl.h>
+#include <imgui_impl_sdl2.h>
 RIGEL_RESTORE_WARNINGS
 
 #include <algorithm>
@@ -30,11 +30,6 @@ namespace rigel::ui::imgui_integration
 
 namespace
 {
-
-constexpr auto VERTICAL_4K_RES = 2160.0f;
-
-constexpr auto IMGUI_DEFAULT_FONT_SIZE = 13;
-constexpr auto INITIAL_UI_SCALE = 3.0f;
 
 std::string gIniFilePath;
 
@@ -57,28 +52,6 @@ bool shouldConsumeEvent(const SDL_Event& event)
   return false;
 }
 
-
-void updateUiScale(const int, const int newHeight)
-{
-  // TODO: Implement proper DPI scaling
-
-  // This is a very simple scaling that makes the UI look reasonably good on a
-  // large 4k screen as well as on lower resolutions.  The idea is that 4k
-  // (3840 x 2160) represents "full" size, and smaller vertical resolutions are
-  // scaled down accordingly, i.e. half of 4k resolution (1080) would result in
-  // a scale factor of 0.5.
-  const auto scaleFactor =
-    std::clamp(newHeight / VERTICAL_4K_RES, 1.0f / INITIAL_UI_SCALE, 1.0f);
-
-  ImGui::GetIO().FontGlobalScale = scaleFactor;
-  ImGui::GetStyle() = ImGuiStyle{};
-  ImGui::GetStyle().ScaleAllSizes(scaleFactor * INITIAL_UI_SCALE);
-
-  // AntiAliasedLinesUseTex requires using bilinear filtering, but we don't use
-  // it (see our version of imgui_impl_opengl3.cpp).
-  ImGui::GetStyle().AntiAliasedLinesUseTex = false;
-}
-
 } // namespace
 
 
@@ -94,20 +67,8 @@ void init(
   ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
-  {
-    // We rasterize the font at a size that looks good at a 4k resolution, and
-    // then scale it down for smaller screen sizes.
-    ImFontConfig config;
-    config.SizePixels = IMGUI_DEFAULT_FONT_SIZE * INITIAL_UI_SCALE;
-    ImGui::GetIO().Fonts->AddFontDefault(&config);
-
-    int width = 0;
-    int height = 0;
-    SDL_GL_GetDrawableSize(pWindow, &width, &height);
-    updateUiScale(width, height);
-  }
-
   ImGui_ImplSDL2_InitForOpenGL(pWindow, pGlContext);
+  ImGui_ImplSDL2_SetGamepadMode(ImGui_ImplSDL2_GamepadMode_AutoAll);
 
   // Dear ImGui can figure out the correct GLSL version by itself. This handles
   // GL ES as well as regular GL.
@@ -140,13 +101,6 @@ bool handleEvent(const SDL_Event& event)
 {
   const auto handledEvent = ImGui_ImplSDL2_ProcessEvent(&event);
 
-  if (
-    event.type == SDL_WINDOWEVENT &&
-    event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-  {
-    updateUiScale(event.window.data1, event.window.data2);
-  }
-
   return handledEvent && shouldConsumeEvent(event);
 }
 
@@ -154,7 +108,7 @@ bool handleEvent(const SDL_Event& event)
 void beginFrame(SDL_Window* pWindow)
 {
   ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplSDL2_NewFrame(pWindow);
+  ImGui_ImplSDL2_NewFrame();
   ImGui::NewFrame();
 }
 
