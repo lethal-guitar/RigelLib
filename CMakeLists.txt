@@ -60,12 +60,6 @@ if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/3rd_party/imgui/imgui/imgui.h")
 endif()
 
 
-if (TARGET Boost::boost)
-    add_definitions(-DRIGEL_HAVE_BOOST)
-endif()
-
-
-
 # Build targets
 ###############################################################################
 
