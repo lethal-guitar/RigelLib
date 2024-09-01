@@ -145,8 +145,32 @@ sdl_utils::Ptr<SDL_Window> createWindow(const WindowConfig& config)
     (config.fullscreen ? FULLSCREEN_FLAG : 0);
   // clang-format on
 
-  const auto width = config.fullscreen ? displayMode.w : config.windowWidth;
-  const auto height = config.fullscreen ? displayMode.h : config.windowHeight;
+  const auto width = [&]() {
+    if (config.fullscreen)
+    {
+      return displayMode.w;
+    }
+
+    if (config.windowWidth == -1)
+    {
+      return displayMode.w * 80 / 100;
+    }
+
+    return config.windowWidth;
+  }();
+  const auto height = [&]() {
+    if (config.fullscreen)
+    {
+      return displayMode.h;
+    }
+
+    if (config.windowHeight == -1)
+    {
+      return displayMode.h * 80 / 100;
+    }
+
+    return config.windowHeight;
+  }();
 
   LOG_F(
     INFO,
@@ -272,7 +296,8 @@ int runApp(
   const WindowConfig& config,
   std::function<bool(SDL_Window*)> runFrameFunc)
 {
-  return runApp(config, [](SDL_Window*) {}, std::move(runFrameFunc));
+  return runApp(
+    config, [](SDL_Window*) {}, std::move(runFrameFunc));
 }
 
 
