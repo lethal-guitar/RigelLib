@@ -103,6 +103,12 @@ std::enable_if_t<detail::IsContainerV<Container>>
 }
 
 
+inline void skipBytes(std::istream& stream, const size_t count)
+{
+  stream.seekg(count, std::ios::cur);
+}
+
+
 template <typename T>
 void readArray(std::istream& stream, T* pData, const size_t count)
 {
