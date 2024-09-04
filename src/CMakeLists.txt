@@ -13,6 +13,7 @@ set(sources
     ../include/rigel/base/static_vector.hpp
     ../include/rigel/base/string_utils.hpp
     ../include/rigel/base/warnings.hpp
+    ../include/rigel/bootstrap.hpp
     ../include/rigel/opengl/opengl.hpp
     ../include/rigel/opengl/shader.hpp
     ../include/rigel/sdl_utils/error.hpp
@@ -21,7 +22,6 @@ set(sources
     ../include/rigel/sdl_utils/ptr.hpp
     ../include/rigel/ui/fps_display.hpp
     ../include/rigel/ui/imgui_integration.hpp
-    ../include/rigel/bootstrap.hpp
 
     base/array_view.cpp
     base/byte_buffer.cpp
