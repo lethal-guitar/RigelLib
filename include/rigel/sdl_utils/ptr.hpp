@@ -20,8 +20,14 @@
 
 RIGEL_DISABLE_WARNINGS
 #include <SDL.h>
-#include <SDL_mixer.h>
-//#include <SDL_ttf.h>
+
+#ifdef RIGEL_HAVE_SDL_MIXER
+  #include <SDL_mixer.h>
+#endif
+
+#ifdef RIGEL_HAVE_SDL_TTF
+  #include <SDL_ttf.h>
+#endif
 RIGEL_RESTORE_WARNINGS
 
 #include <memory>
@@ -39,10 +45,14 @@ struct Deleter
   void operator()(SDL_GameController* ptr) { SDL_GameControllerClose(ptr); }
   void operator()(SDL_Surface* ptr) { SDL_FreeSurface(ptr); }
 
+#ifdef RIGEL_HAVE_SDL_MIXER
   void operator()(Mix_Chunk* ptr) { Mix_FreeChunk(ptr); }
   void operator()(Mix_Music* ptr) { Mix_FreeMusic(ptr); }
+#endif
 
-  // void operator()(TTF_Font* ptr) { TTF_CloseFont(ptr); }
+#ifdef RIGEL_HAVE_SDL_TTF
+  void operator()(TTF_Font* ptr) { TTF_CloseFont(ptr); }
+#endif
 };
 
 } // namespace detail
