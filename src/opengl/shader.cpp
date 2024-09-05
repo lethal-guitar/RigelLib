@@ -83,9 +83,10 @@ const auto SHADER_PREAMBLE = R"shd(
 #endif
 
 
-GlHandleWrapper compileShader(const std::string& source, GLenum type)
+Handle<tag::Shader> compileShader(const std::string& source, GLenum type)
 {
-  auto shader = GlHandleWrapper{glCreateShader(type), glDeleteShader};
+  auto shader = Handle<tag::Shader>::create(type);
+
   const auto sourcePtr = source.c_str();
   glShaderSource(shader.mHandle, 1, &sourcePtr, nullptr);
   glCompileShader(shader.mHandle);
@@ -131,7 +132,7 @@ auto useTemporarily(const GLuint shaderHandle)
 
 
 Shader::Shader(const ShaderSpec& spec)
-  : mProgram(glCreateProgram(), glDeleteProgram)
+  : mProgram(Handle<tag::Program>::create())
   , mVertexLayout(spec.mVertexLayout)
 {
   auto vertexShader = compileShader(

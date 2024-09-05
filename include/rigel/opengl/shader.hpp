@@ -19,6 +19,7 @@
 #include <rigel/base/array_view.hpp>
 #include <rigel/base/defer.hpp>
 #include <rigel/base/warnings.hpp>
+#include <rigel/opengl/handle.hpp>
 #include <rigel/opengl/opengl.hpp>
 
 RIGEL_DISABLE_WARNINGS
@@ -34,39 +35,6 @@ RIGEL_RESTORE_WARNINGS
 
 namespace rigel::opengl
 {
-
-class GlHandleWrapper
-{
-public:
-  using DeleteFunc = std::function<void(GLuint)>;
-
-  GlHandleWrapper() = default;
-
-  template <typename DeleteFunc>
-  explicit GlHandleWrapper(GLuint handle, DeleteFunc&& deleter)
-    : mHandle(handle)
-    , mDeleteFunc(std::forward<DeleteFunc>(deleter))
-  {
-  }
-
-  GlHandleWrapper(const GlHandleWrapper&) = delete;
-  GlHandleWrapper(GlHandleWrapper&& other)
-    : mHandle(other.mHandle)
-    , mDeleteFunc(other.mDeleteFunc)
-  {
-    other.mHandle = 0;
-  }
-
-  ~GlHandleWrapper() { mDeleteFunc(mHandle); }
-
-  GlHandleWrapper& operator=(const GlHandleWrapper&) = delete;
-
-  GLuint mHandle = 0;
-
-private:
-  DeleteFunc mDeleteFunc;
-};
-
 
 enum class VertexLayout
 {
@@ -152,7 +120,7 @@ private:
   GLint location(const std::string& name) const;
 
 private:
-  GlHandleWrapper mProgram;
+  Handle<tag::Program> mProgram;
   VertexLayout mVertexLayout;
   mutable std::unordered_map<std::string, GLint> mLocationCache;
 };
