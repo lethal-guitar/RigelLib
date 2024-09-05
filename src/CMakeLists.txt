@@ -17,6 +17,7 @@ set(sources
     ../include/rigel/opengl/handle.hpp
     ../include/rigel/opengl/opengl.hpp
     ../include/rigel/opengl/shader.hpp
+    ../include/rigel/opengl/utils.hpp
     ../include/rigel/sdl_utils/error.hpp
     ../include/rigel/sdl_utils/key_code.hpp
     ../include/rigel/sdl_utils/platform.hpp
@@ -31,6 +32,7 @@ set(sources
     base/string_utils.cpp
     opengl/opengl.cpp
     opengl/shader.cpp
+    opengl/utils.cpp
     sdl_utils/error.cpp
     sdl_utils/platform.cpp
     ui/fps_display.cpp
