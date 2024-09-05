@@ -14,6 +14,7 @@ set(sources
     ../include/rigel/base/string_utils.hpp
     ../include/rigel/base/warnings.hpp
     ../include/rigel/bootstrap.hpp
+    ../include/rigel/opengl/handle.hpp
     ../include/rigel/opengl/opengl.hpp
     ../include/rigel/opengl/shader.hpp
     ../include/rigel/sdl_utils/error.hpp
