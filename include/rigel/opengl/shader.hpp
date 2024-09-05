@@ -36,16 +36,24 @@ RIGEL_RESTORE_WARNINGS
 namespace rigel::opengl
 {
 
-enum class VertexLayout
+struct AttributeSpec
 {
-  PositionAndTexCoords,
-  PositionAndColor
+  enum class Size
+  {
+    scalar = 1,
+    vec2 = 2,
+    vec3 = 3,
+    vec4 = 4
+  };
+
+  const char* mName;
+  Size mSize;
 };
 
 
 struct ShaderSpec
 {
-  VertexLayout mVertexLayout;
+  base::ArrayView<AttributeSpec> mAttributes;
   base::ArrayView<const char*> mTextureUnitNames;
   const char* mVertexSource;
   const char* mFragmentSource;
@@ -114,18 +122,24 @@ public:
   }
 
   GLuint handle() const { return mProgram.mHandle; }
-  VertexLayout vertexLayout() const { return mVertexLayout; }
+
+  base::ArrayView<AttributeSpec> attributeSpecs() const
+  {
+    return mAttributeSpecs;
+  }
 
 private:
   GLint location(const std::string& name) const;
 
 private:
   Handle<tag::Program> mProgram;
-  VertexLayout mVertexLayout;
+  base::ArrayView<AttributeSpec> mAttributeSpecs;
   mutable std::unordered_map<std::string, GLint> mLocationCache;
 };
 
 
 base::ScopeGuard useTemporarily(const Shader& shader);
+
+void submitVertexAttributeSetup(base::ArrayView<AttributeSpec> attributes);
 
 } // namespace rigel::opengl

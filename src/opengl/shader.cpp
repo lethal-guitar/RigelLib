@@ -16,7 +16,10 @@
 
 #include "opengl/shader.hpp"
 
+#include "opengl/utils.hpp"
+
 #include <memory>
+#include <numeric>
 #include <stdexcept>
 #include <string>
 
@@ -133,7 +136,7 @@ auto useTemporarily(const GLuint shaderHandle)
 
 Shader::Shader(const ShaderSpec& spec)
   : mProgram(Handle<tag::Program>::create())
-  , mVertexLayout(spec.mVertexLayout)
+  , mAttributeSpecs(spec.mAttributes)
 {
   auto vertexShader = compileShader(
     std::string{SHADER_PREAMBLE} + spec.mVertexSource, GL_VERTEX_SHADER);
@@ -143,17 +146,13 @@ Shader::Shader(const ShaderSpec& spec)
   glAttachShader(mProgram.mHandle, vertexShader.mHandle);
   glAttachShader(mProgram.mHandle, fragmentShader.mHandle);
 
-  switch (spec.mVertexLayout)
   {
-    case VertexLayout::PositionAndTexCoords:
-      glBindAttribLocation(mProgram.mHandle, 0, "position");
-      glBindAttribLocation(mProgram.mHandle, 1, "texCoord");
-      break;
-
-    case VertexLayout::PositionAndColor:
-      glBindAttribLocation(mProgram.mHandle, 0, "position");
-      glBindAttribLocation(mProgram.mHandle, 1, "color");
-      break;
+    auto index = 0;
+    for (const auto& attribute : mAttributeSpecs)
+    {
+      glBindAttribLocation(mProgram.mHandle, index, attribute.mName);
+      ++index;
+    }
   }
 
   glLinkProgram(mProgram.mHandle);
@@ -214,6 +213,35 @@ GLint Shader::location(const std::string& name) const
 base::ScopeGuard useTemporarily(const Shader& shader)
 {
   return useTemporarily(shader.handle());
+}
+
+
+void submitVertexAttributeSetup(base::ArrayView<AttributeSpec> attributes)
+{
+  const auto totalSize = std::accumulate(
+    attributes.begin(),
+    attributes.end(),
+    0,
+    [](int sum, const AttributeSpec& attribute) {
+      return sum + static_cast<int>(attribute.mSize);
+    });
+
+  auto index = 0;
+  auto offset = 0;
+  for (const auto& attribute : attributes)
+  {
+    const auto size = static_cast<int>(attribute.mSize);
+    glVertexAttribPointer(
+      index,
+      size,
+      GL_FLOAT,
+      GL_FALSE,
+      sizeof(float) * totalSize,
+      toAttribOffset(offset));
+
+    offset += size * sizeof(float);
+    ++index;
+  }
 }
 
 } // namespace rigel::opengl
