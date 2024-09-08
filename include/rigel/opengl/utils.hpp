@@ -41,7 +41,7 @@ inline glm::vec4 toGlColor(const base::Color& color)
 }
 
 
-inline void* toAttribOffset(std::uintptr_t offset)
+inline void* toVoidPtr(std::uintptr_t offset)
 {
   return reinterpret_cast<void*>(offset);
 }

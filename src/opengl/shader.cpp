@@ -237,7 +237,7 @@ void submitVertexAttributeSetup(base::ArrayView<AttributeSpec> attributes)
       GL_FLOAT,
       GL_FALSE,
       sizeof(float) * totalSize,
-      toAttribOffset(offset));
+      toVoidPtr(offset));
 
     offset += size * sizeof(float);
     ++index;
