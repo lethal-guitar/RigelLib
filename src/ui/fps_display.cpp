@@ -38,6 +38,30 @@ const auto FILTER_WEIGHT = 0.9f;
 } // namespace
 
 
+FpsDisplay::FpsDisplay(base::Vec2f position)
+  : mPosition(position)
+{
+}
+
+
+void FpsDisplay::updateAndRender(const double totalElapsed)
+{
+  updateFilteredFrameTime(totalElapsed);
+
+  const auto smoothedFps = base::round(1.0f / mFilteredFrameTime);
+
+  std::stringstream statsReport;
+  // clang-format off
+  statsReport
+    << smoothedFps << " FPS, "
+    << std::setw(4) << std::fixed << std::setprecision(2)
+    << totalElapsed * 1000.0 << " ms";
+  // clang-format on
+
+  displayText(statsReport.str());
+}
+
+
 void FpsDisplay::updateAndRender(
   const double totalElapsed,
   const double elapsedCpu,
@@ -47,10 +71,7 @@ void FpsDisplay::updateAndRender(
   mFrameTimesHistory.push_back(float(totalElapsed));
 #endif
 
-  mPreFilteredFrameTime = base::lerp(
-    static_cast<float>(totalElapsed), mPreFilteredFrameTime, PRE_FILTER_WEIGHT);
-  mFilteredFrameTime =
-    base::lerp(mPreFilteredFrameTime, mFilteredFrameTime, FILTER_WEIGHT);
+  updateFilteredFrameTime(totalElapsed);
 
   const auto smoothedFps = base::round(1.0f / mFilteredFrameTime);
 
@@ -65,16 +86,7 @@ void FpsDisplay::updateAndRender(
   // clang-format on
 
   const auto reportString = statsReport.str();
-
-  auto pDrawList = ImGui::GetForegroundDrawList();
-
-  const auto color = IM_COL32(255, 255, 255, 255);
-
-  pDrawList->AddText(
-    {0, 0},
-    color,
-    reportString.data(),
-    reportString.data() + reportString.size());
+  displayText(reportString);
 
 #ifdef RIGEL_HAVE_BOOST
   // Draw frame-time graph
@@ -91,7 +103,10 @@ void FpsDisplay::updateAndRender(
     reportString.data(),
     reportString.data() + reportString.size());
 
-  const auto basePos = ImVec2{textSize.x + 20, 0};
+  auto pDrawList = ImGui::GetForegroundDrawList();
+  const auto color = IM_COL32(255, 255, 255, 255);
+
+  const auto basePos = ImVec2{textSize.x + 20 + mPosition.x, mPosition.y};
 
   // Average frame time in ms
   const auto average = mFilteredFrameTime * 1000.0f;
@@ -111,6 +126,26 @@ void FpsDisplay::updateAndRender(
       color);
   }
 #endif
+}
+
+
+void FpsDisplay::updateFilteredFrameTime(const double totalElapsed)
+{
+  mPreFilteredFrameTime = base::lerp(
+    static_cast<float>(totalElapsed), mPreFilteredFrameTime, PRE_FILTER_WEIGHT);
+  mFilteredFrameTime =
+    base::lerp(mPreFilteredFrameTime, mFilteredFrameTime, FILTER_WEIGHT);
+}
+
+
+void FpsDisplay::displayText(const std::string& text)
+{
+  auto pDrawList = ImGui::GetForegroundDrawList();
+
+  const auto color = IM_COL32(255, 255, 255, 255);
+
+  pDrawList->AddText(
+    {mPosition.x, mPosition.y}, color, text.data(), text.data() + text.size());
 }
 
 } // namespace rigel::ui

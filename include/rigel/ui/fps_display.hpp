@@ -16,9 +16,13 @@
 
 #pragma once
 
+#include <rigel/base/spatial_types.hpp>
+
 #ifdef RIGEL_HAVE_BOOST
   #include <boost/circular_buffer.hpp>
 #endif
+
+#include <string>
 
 
 namespace rigel::ui
@@ -27,16 +31,23 @@ namespace rigel::ui
 class FpsDisplay
 {
 public:
+  explicit FpsDisplay(base::Vec2f position = {});
+
+  void updateAndRender(double totalElapsed);
   void
     updateAndRender(double totalElapsed, double elapsedCpu, double elapsedGpu);
 
-
 private:
+  void updateFilteredFrameTime(double totalElapsed);
+  void displayText(const std::string& text);
+
 #ifdef RIGEL_HAVE_BOOST
   boost::circular_buffer<float> mFrameTimesHistory{120};
 #endif
   float mPreFilteredFrameTime = 0.0f;
   float mFilteredFrameTime = 0.0f;
+
+  base::Vec2f mPosition;
 };
 
 } // namespace rigel::ui
