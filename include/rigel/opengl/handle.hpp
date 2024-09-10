@@ -52,23 +52,24 @@ namespace detail
 template <typename HandleType>
 GLuint createHandle()
 {
-  using namespace tag;
+  namespace t = tag;
 
   static_assert(
-    std::is_same_v<HandleType, Buffer> || std::is_same_v<HandleType, Texture> ||
-    std::is_same_v<HandleType, Program>);
+    std::is_same_v<HandleType, t::Buffer> ||
+    std::is_same_v<HandleType, t::Texture> ||
+    std::is_same_v<HandleType, t::Program>);
 
   GLuint handle = 0;
 
-  if constexpr (std::is_same_v<HandleType, Buffer>)
+  if constexpr (std::is_same_v<HandleType, t::Buffer>)
   {
     glGenBuffers(1, &handle);
   }
-  else if constexpr (std::is_same_v<HandleType, Texture>)
+  else if constexpr (std::is_same_v<HandleType, t::Texture>)
   {
     glGenTextures(1, &handle);
   }
-  else if constexpr (std::is_same_v<HandleType, Program>)
+  else if constexpr (std::is_same_v<HandleType, t::Program>)
   {
     handle = glCreateProgram();
   }
@@ -86,25 +87,27 @@ inline GLuint createHandle(GLenum type)
 template <typename HandleType>
 void destroyHandle(const GLuint handle)
 {
-  using namespace tag;
+  namespace t = tag;
 
   static_assert(
-    std::is_same_v<HandleType, Buffer> || std::is_same_v<HandleType, Texture> ||
-    std::is_same_v<HandleType, Shader> || std::is_same_v<HandleType, Program>);
+    std::is_same_v<HandleType, t::Buffer> ||
+    std::is_same_v<HandleType, t::Texture> ||
+    std::is_same_v<HandleType, t::Shader> ||
+    std::is_same_v<HandleType, t::Program>);
 
-  if constexpr (std::is_same_v<HandleType, Buffer>)
+  if constexpr (std::is_same_v<HandleType, t::Buffer>)
   {
     glDeleteBuffers(1, &handle);
   }
-  else if constexpr (std::is_same_v<HandleType, Texture>)
+  else if constexpr (std::is_same_v<HandleType, t::Texture>)
   {
     glDeleteTextures(1, &handle);
   }
-  else if constexpr (std::is_same_v<HandleType, Shader>)
+  else if constexpr (std::is_same_v<HandleType, t::Shader>)
   {
     glDeleteShader(handle);
   }
-  else if constexpr (std::is_same_v<HandleType, Program>)
+  else if constexpr (std::is_same_v<HandleType, t::Program>)
   {
     glDeleteProgram(handle);
   }
