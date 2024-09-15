@@ -51,9 +51,12 @@ struct AttributeSpec
 };
 
 
+using AttributeSpecList = base::ArrayView<AttributeSpec>;
+
+
 struct ShaderSpec
 {
-  base::ArrayView<AttributeSpec> mAttributes;
+  AttributeSpecList mAttributes;
   base::ArrayView<const char*> mTextureUnitNames;
   const char* mVertexSource;
   const char* mFragmentSource;
