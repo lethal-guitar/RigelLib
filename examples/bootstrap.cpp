@@ -20,7 +20,7 @@
 #include <rigel/ui/imgui_integration.hpp>
 
 #include <SDL_main.h>
-#include <imgui/imgui.h>
+#include <imgui.h>
 #include <lyra/lyra.hpp>
 
 
