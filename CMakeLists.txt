@@ -80,5 +80,3 @@ endif()
 
 
 add_library(RigelLib::RigelLib ALIAS RigelLib)
-add_library(RigelLib::lyra ALIAS lyra)
-add_library(RigelLib::SDL2 ALIAS SDL2::Core)
