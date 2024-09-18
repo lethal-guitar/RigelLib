@@ -85,8 +85,9 @@ int runApp(
 
 /** Helper function for argument parsing */
 std::optional<int> parseArgs(
-  int argc, char** argv,
+  int argc,
+  char** argv,
   std::function<void(lyra::cli&)> setupCliOptionsFunc,
   std::function<bool()> validateCliOptionsParseResultFunc);
 
-}
+} // namespace rigel
