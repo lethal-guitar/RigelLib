@@ -180,8 +180,8 @@ sdl_utils::Ptr<SDL_Window> createWindow(const WindowConfig& config)
     height);
   auto pWindow = sdl_utils::wrap(sdl_utils::check(SDL_CreateWindow(
     config.windowTitle.c_str(),
-    config.windowX,
-    config.windowY,
+    config.windowX != -1 ? config.windowX : SDL_WINDOWPOS_CENTERED,
+    config.windowY != -1 ? config.windowY : SDL_WINDOWPOS_CENTERED,
     width,
     height,
     windowFlags)));

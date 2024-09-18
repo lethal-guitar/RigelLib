@@ -35,10 +35,14 @@ namespace rigel
 struct WindowConfig
 {
   std::string windowTitle = "Rigel SDL Window";
-  int windowWidth = 1920;
-  int windowHeight = 1080;
-  int windowX = SDL_WINDOWPOS_CENTERED;
-  int windowY = SDL_WINDOWPOS_CENTERED;
+
+  // Width/height of -1 means 80 % of Desktop size for each dimension
+  // X/Y of -1 means centered position
+  int windowWidth = -1;
+  int windowHeight = -1;
+  int windowX = -1;
+  int windowY = -1;
+
   bool fullscreen = true;
   bool enableVsync = true;
   std::optional<uint8_t> depthBufferBits;
