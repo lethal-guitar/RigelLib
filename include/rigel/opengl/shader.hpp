@@ -70,6 +70,11 @@ public:
 
   void use() const;
 
+  void setUniform(const std::string& name, const glm::mat3& matrix) const
+  {
+    glUniformMatrix3fv(location(name), 1, GL_FALSE, glm::value_ptr(matrix));
+  }
+
   void setUniform(const std::string& name, const glm::mat4& matrix) const
   {
     glUniformMatrix4fv(location(name), 1, GL_FALSE, glm::value_ptr(matrix));
