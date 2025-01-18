@@ -90,7 +90,7 @@ Image loadImageOrThrow(const std::filesystem::path& path)
 {
   if (auto image = loadImage(path))
   {
-    return *image;
+    return Image{std::move(*image)};
   }
 
   throw std::runtime_error("Failed to load: " + path.u8string());

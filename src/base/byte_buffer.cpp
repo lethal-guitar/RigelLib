@@ -56,7 +56,7 @@ ByteBuffer loadFileOrThrow(const std::filesystem::path& path)
 {
   if (const auto buffer = tryLoadFile(path))
   {
-    return *buffer;
+    return ByteBuffer{*buffer};
   }
 
   throw std::runtime_error(string("File can't be opened: ") + path.u8string());
