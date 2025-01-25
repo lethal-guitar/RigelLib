@@ -23,7 +23,6 @@ set(sources
     ../include/rigel/sdl_utils/platform.hpp
     ../include/rigel/sdl_utils/ptr.hpp
     ../include/rigel/ui/fps_display.hpp
-    ../include/rigel/ui/imgui_integration.hpp
 
     base/array_view.cpp
     base/byte_buffer.cpp
@@ -35,8 +34,6 @@ set(sources
     opengl/utils.cpp
     sdl_utils/error.cpp
     sdl_utils/platform.cpp
-    ui/fps_display.cpp
-    ui/imgui_integration.cpp
     bootstrap.cpp
 )
 
@@ -53,7 +50,6 @@ target_include_directories(RigelLib
 target_link_libraries(RigelLib
     PUBLIC
     SDL2::Core
-    dear_imgui
     glad
     glm
     loguru
@@ -66,6 +62,27 @@ target_link_libraries(RigelLib
     speex_resampler
     stb
 )
+
+
+if (RIGEL_USE_DEAR_IMGUI)
+    target_compile_definitions(RigelLib
+        PUBLIC
+        -DRIGEL_USE_DEAR_IMGUI
+    )
+
+    target_sources(RigelLib
+        PRIVATE
+        ../include/rigel/ui/imgui_integration.hpp
+        ui/fps_display.cpp
+        ui/imgui_integration.cpp
+    )
+
+    target_link_libraries(RigelLib
+        PUBLIC
+        dear_imgui
+    )
+endif()
+
 
 if (TARGET Boost::boost)
     target_link_libraries(RigelLib PUBLIC Boost::boost)

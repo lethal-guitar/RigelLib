@@ -28,10 +28,13 @@ target_include_directories(lyra
 
 # EXCLUDE_FROM_ALL to disable installing these HO or static library deps
 add_subdirectory(glad EXCLUDE_FROM_ALL)
-add_subdirectory(imgui EXCLUDE_FROM_ALL)
 add_subdirectory(loguru EXCLUDE_FROM_ALL)
 add_subdirectory(speex_resampler EXCLUDE_FROM_ALL)
 add_subdirectory(stb EXCLUDE_FROM_ALL)
+
+if (RIGEL_USE_DEAR_IMGUI)
+    add_subdirectory(imgui EXCLUDE_FROM_ALL)
+endif()
 
 if (WIN32)
     add_subdirectory(win32_SetProcessDpiAware EXCLUDE_FROM_ALL)

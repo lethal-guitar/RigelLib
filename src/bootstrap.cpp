@@ -20,7 +20,10 @@
 #include "opengl/opengl.hpp"
 #include "sdl_utils/error.hpp"
 #include "sdl_utils/ptr.hpp"
-#include "ui/imgui_integration.hpp"
+
+#ifdef RIGEL_USE_DEAR_IMGUI
+  #include "ui/imgui_integration.hpp"
+#endif
 
 RIGEL_DISABLE_WARNINGS
 #include <loguru.hpp>
@@ -253,9 +256,11 @@ void runAppUnguarded(
   SDL_DisableScreenSaver();
   SDL_ShowCursor(SDL_DISABLE);
 
+#ifdef RIGEL_USE_DEAR_IMGUI
   LOG_F(INFO, "Initializing Dear ImGui");
   ui::imgui_integration::init(pWindow.get(), pGlContext, {});
   auto imGuiGuard = defer([]() { ui::imgui_integration::shutdown(); });
+#endif
 
   initFunc(pWindow.get());
 

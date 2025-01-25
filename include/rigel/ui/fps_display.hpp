@@ -28,6 +28,8 @@
 namespace rigel::ui
 {
 
+#ifdef RIGEL_USE_DEAR_IMGUI
+
 class FpsDisplay
 {
 public:
@@ -49,5 +51,18 @@ private:
 
   base::Vec2f mPosition;
 };
+
+#else // RIGEL_USE_DEAR_IMGUI not defined
+
+class FpsDisplay
+{
+public:
+  explicit FpsDisplay(base::Vec2f = {}) { }
+
+  void updateAndRender(double) { }
+  void updateAndRender(double, double, double) { }
+};
+
+#endif
 
 } // namespace rigel::ui
