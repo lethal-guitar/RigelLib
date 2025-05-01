@@ -71,6 +71,12 @@ inline float fract(const float value)
 }
 
 
+inline double fract(const double value)
+{
+  return value - int(value);
+}
+
+
 template <typename T, typename U>
 T applyThreshold(const T value, const U threshold)
 {
