@@ -17,6 +17,7 @@
 #pragma once
 
 #include <rigel/base/color.hpp>
+#include <rigel/base/spatial_types.hpp>
 
 #include <cstdint>
 #include <vector>
@@ -67,6 +68,11 @@ public:
     std::size_t y,
     std::size_t width,
     std::size_t height) const;
+
+  base::Size extents() const
+  {
+    return {int(mWidth), int(mHeight)};
+  }
 
 private:
   PixelBuffer mPixels;
