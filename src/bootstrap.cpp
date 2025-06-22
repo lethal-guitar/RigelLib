@@ -175,6 +175,9 @@ sdl_utils::Ptr<SDL_Window> createWindow(const WindowConfig& config)
     return config.windowHeight;
   }();
 
+  sdl_utils::check(SDL_GL_LoadLibrary(nullptr));
+  setGLAttributes(config);
+
   LOG_F(
     INFO,
     "Creating window in %s mode, size: %dx%d",
@@ -235,9 +238,6 @@ void runAppUnguarded(
 {
   using base::defer;
 
-  sdl_utils::check(SDL_GL_LoadLibrary(nullptr));
-
-  setGLAttributes(config);
   auto pWindow = createWindow(config);
 
   LOG_F(INFO, "Initializing OpenGL context");
