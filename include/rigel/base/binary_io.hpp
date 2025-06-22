@@ -146,4 +146,4 @@ std::enable_if_t<detail::IsContainerV<Container>>
   }
 }
 
-} // namespace rigel
+} // namespace rigel::base
