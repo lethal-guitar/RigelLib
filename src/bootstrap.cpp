@@ -129,79 +129,6 @@ void setGLAttributes(const WindowConfig& config)
 }
 
 
-sdl_utils::Ptr<SDL_Window> createWindow(const WindowConfig& config)
-{
-  LOG_SCOPE_FUNCTION(INFO);
-
-  LOG_F(INFO, "Querying current screen resolution");
-
-  SDL_DisplayMode displayMode;
-  sdl_utils::check(SDL_GetDesktopDisplayMode(0, &displayMode));
-
-  LOG_F(INFO, "Screen resolution is %dx%d", displayMode.w, displayMode.h);
-
-  // clang-format off
-  const auto windowFlags =
-    SDL_WINDOW_RESIZABLE |
-    SDL_WINDOW_ALLOW_HIGHDPI |
-    SDL_WINDOW_OPENGL |
-    (config.fullscreen ? FULLSCREEN_FLAG : 0);
-  // clang-format on
-
-  const auto width = [&]() {
-    if (config.fullscreen)
-    {
-      return displayMode.w;
-    }
-
-    if (config.windowWidth == -1)
-    {
-      return displayMode.w * 80 / 100;
-    }
-
-    return config.windowWidth;
-  }();
-  const auto height = [&]() {
-    if (config.fullscreen)
-    {
-      return displayMode.h;
-    }
-
-    if (config.windowHeight == -1)
-    {
-      return displayMode.h * 80 / 100;
-    }
-
-    return config.windowHeight;
-  }();
-
-  sdl_utils::check(SDL_GL_LoadLibrary(nullptr));
-  setGLAttributes(config);
-
-  LOG_F(
-    INFO,
-    "Creating window in %s mode, size: %dx%d",
-    config.fullscreen ? "fullscreen" : "windowed",
-    width,
-    height);
-  auto pWindow = sdl_utils::wrap(sdl_utils::check(SDL_CreateWindow(
-    config.windowTitle.c_str(),
-    config.windowX != -1 ? config.windowX : SDL_WINDOWPOS_CENTERED,
-    config.windowY != -1 ? config.windowY : SDL_WINDOWPOS_CENTERED,
-    width,
-    height,
-    windowFlags)));
-
-  // Setting a display mode is necessary to make sure that exclusive
-  // full-screen mode keeps using the desktop resolution. Without this,
-  // switching to exclusive full-screen mode from windowed mode would result in
-  // a screen resolution matching the window's last size.
-  sdl_utils::check(SDL_SetWindowDisplayMode(pWindow.get(), &displayMode));
-
-  return pWindow;
-}
-
-
 void loadGameControllerDbForOldSdl()
 {
   // SDL versions before 2.0.10 didn't check the SDL_GAMECONTROLLERCONFIG_FILE
@@ -294,6 +221,79 @@ void runAppUnguarded(
     SDL_GetCurrentAudioDriver());
 
   return sdlGuard;
+}
+
+
+sdl_utils::Ptr<SDL_Window> createWindow(const WindowConfig& config)
+{
+  LOG_SCOPE_FUNCTION(INFO);
+
+  LOG_F(INFO, "Querying current screen resolution");
+
+  SDL_DisplayMode displayMode;
+  sdl_utils::check(SDL_GetDesktopDisplayMode(0, &displayMode));
+
+  LOG_F(INFO, "Screen resolution is %dx%d", displayMode.w, displayMode.h);
+
+  // clang-format off
+  const auto windowFlags =
+    SDL_WINDOW_RESIZABLE |
+    SDL_WINDOW_ALLOW_HIGHDPI |
+    SDL_WINDOW_OPENGL |
+    (config.fullscreen ? FULLSCREEN_FLAG : 0);
+  // clang-format on
+
+  const auto width = [&]() {
+    if (config.fullscreen)
+    {
+      return displayMode.w;
+    }
+
+    if (config.windowWidth == -1)
+    {
+      return displayMode.w * 80 / 100;
+    }
+
+    return config.windowWidth;
+  }();
+  const auto height = [&]() {
+    if (config.fullscreen)
+    {
+      return displayMode.h;
+    }
+
+    if (config.windowHeight == -1)
+    {
+      return displayMode.h * 80 / 100;
+    }
+
+    return config.windowHeight;
+  }();
+
+  sdl_utils::check(SDL_GL_LoadLibrary(nullptr));
+  setGLAttributes(config);
+
+  LOG_F(
+    INFO,
+    "Creating window in %s mode, size: %dx%d",
+    config.fullscreen ? "fullscreen" : "windowed",
+    width,
+    height);
+  auto pWindow = sdl_utils::wrap(sdl_utils::check(SDL_CreateWindow(
+    config.windowTitle.c_str(),
+    config.windowX != -1 ? config.windowX : SDL_WINDOWPOS_CENTERED,
+    config.windowY != -1 ? config.windowY : SDL_WINDOWPOS_CENTERED,
+    width,
+    height,
+    windowFlags)));
+
+  // Setting a display mode is necessary to make sure that exclusive
+  // full-screen mode keeps using the desktop resolution. Without this,
+  // switching to exclusive full-screen mode from windowed mode would result in
+  // a screen resolution matching the window's last size.
+  sdl_utils::check(SDL_SetWindowDisplayMode(pWindow.get(), &displayMode));
+
+  return pWindow;
 }
 
 

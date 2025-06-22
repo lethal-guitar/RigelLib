@@ -18,6 +18,7 @@
 
 #include <rigel/base/defer.hpp>
 #include <rigel/base/warnings.hpp>
+#include <rigel/sdl_utils/ptr.hpp>
 
 RIGEL_DISABLE_WARNINGS
 #include <SDL.h>
@@ -62,6 +63,11 @@ struct WindowConfig
  * by itself.
  */
 [[nodiscard]] base::ScopeGuard initSdl();
+
+
+/** Create OpenGL-enabled application window */
+[[nodiscard]] sdl_utils::Ptr<SDL_Window>
+  createWindow(const WindowConfig& config);
 
 
 /** Init SDL+Gl, create window and run provided function in a loop
