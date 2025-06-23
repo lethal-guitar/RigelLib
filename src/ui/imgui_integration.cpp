@@ -41,6 +41,7 @@ bool shouldConsumeEvent(const SDL_Event& event)
   {
     case SDL_MOUSEWHEEL:
     case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
       return io.WantCaptureMouse;
 
     case SDL_TEXTINPUT:
