@@ -54,6 +54,8 @@ struct Color
       uint8_t(r * a / 255), uint8_t(g * a / 255), uint8_t(b * a / 255), a};
   }
 
+  Color withAlpha(uint8_t newAlpha) const { return {r, g, b, newAlpha}; }
+
   std::uint8_t r = 0;
   std::uint8_t g = 0;
   std::uint8_t b = 0;
