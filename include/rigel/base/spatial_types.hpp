@@ -132,6 +132,13 @@ struct Rect
 };
 
 
+template <typename NewValueT, typename ValueT>
+Rect<NewValueT> cast(const Rect<ValueT>& rect)
+{
+  return {cast<NewValueT>(rect.topLeft), cast<NewValueT>(rect.size)};
+}
+
+
 template <typename ValueT>
 Rect<ValueT> makeRect(Vec2T<ValueT> topLeft, Vec2T<ValueT> bottomRight)
 {
