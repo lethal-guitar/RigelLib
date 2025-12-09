@@ -47,6 +47,7 @@ struct WindowConfig
   bool fullscreen = true;
   bool enableVsync = true;
   std::optional<uint8_t> depthBufferBits;
+  bool useGl2 = false;
 };
 
 
