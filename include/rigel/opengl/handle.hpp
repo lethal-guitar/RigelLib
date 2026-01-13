@@ -19,6 +19,7 @@
 #include <rigel/opengl/opengl.hpp>
 
 #include <type_traits>
+#include <utility>
 
 
 namespace rigel::opengl
