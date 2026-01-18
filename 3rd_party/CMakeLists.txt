@@ -6,11 +6,15 @@ target_include_directories(glm
     INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/glm"
 )
-add_library(nlohmann-json INTERFACE)
-target_include_directories(nlohmann-json
-    INTERFACE
-    "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann"
-)
+
+if (RIGEL_VENDOR_NLOHMANN)
+    add_library(nlohmann-json INTERFACE)
+    target_include_directories(nlohmann-json
+        INTERFACE
+        "${CMAKE_CURRENT_SOURCE_DIR}/nlohmann"
+    )
+endif()
+
 add_library(static_vector INTERFACE)
 target_include_directories(static_vector
     INTERFACE

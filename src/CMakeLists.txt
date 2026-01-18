@@ -54,7 +54,6 @@ target_link_libraries(RigelLib
     glm
     loguru
     lyra
-    nlohmann-json
     static_vector
     std::filesystem
 
@@ -62,6 +61,13 @@ target_link_libraries(RigelLib
     speex_resampler
     stb
 )
+
+if (RIGEL_VENDOR_NLOHMANN)
+    target_link_libraries(RigelLib
+        PUBLIC
+        nlohmann-json
+    )
+endif()
 
 
 if (RIGEL_USE_DEAR_IMGUI)

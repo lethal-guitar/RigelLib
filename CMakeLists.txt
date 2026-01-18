@@ -22,6 +22,7 @@ option(RIGEL_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 option(RIGEL_BUILD_TESTS "Build tests" OFF)
 option(RIGEL_BUILD_EXAMPLES "Build examples" OFF)
 option(RIGEL_USE_DEAR_IMGUI "Use Dear ImGui" ON)
+option(RIGEL_VENDOR_NLOHMANN "Provide nlohmann::json library" ON)
 
 if (NOT RIGEL_IS_BUNDLED)
     if (NOT CMAKE_BUILD_TYPE)
